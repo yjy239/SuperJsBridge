@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.IBridgeCore;
+import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.BridgeWebView;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superjsbridgedemo.DSCompent.DSCore;
@@ -45,6 +46,13 @@ public class JsBridgeActivity extends AppCompatActivity {
                         Toast.makeText(JsBridgeActivity.this,data,Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        });
+
+        bridge.registerHandler("test3", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackFunction function) {
+                function.onCallBack("response: data");
             }
         });
 

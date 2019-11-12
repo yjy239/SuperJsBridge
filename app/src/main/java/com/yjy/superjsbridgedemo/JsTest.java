@@ -18,14 +18,12 @@ import com.yjy.superbridge.jsbridge.CallBackFunction;
  */
 public class JsTest {
 
-    @JavascriptInterface
     public void test1(String s){
         Log.e("JSTest",s) ;
     }
 
 
 
-    @JavascriptInterface
     public void submitFromWeb(String s2, CallBackFunction function){
        function.onCallBack("response: "+s2);
     }
