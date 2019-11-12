@@ -1,4 +1,5 @@
 # SuperJsBridge
+[![](https://jitpack.io/v/yjy239/SuperJsBridge.svg)](https://jitpack.io/#yjy239/SuperJsBridge)
 一个对主流的JsBridge以及DsBridge的抽象合并其实就是为了方便native Java端的开发。
 
 SuperJsBridge 可以使用默认的老式大头鬼的jsbridge，就是通过拦截url协议的jsbridge。
@@ -7,7 +8,7 @@ SuperJsBridge 可以使用默认的老式大头鬼的jsbridge，就是通过拦�
 # 如何使用：
 ```
 	dependencies {
-	        implementation 'com.github.yjy239:SuperJsBridge:Tag'
+	        implementation 'com.github.yjy239:SuperJsBridge:1.0'
 	}
 ```
 
