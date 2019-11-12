@@ -3,10 +3,13 @@ package com.yjy.superjsbridgedemo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Toast;
 
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.IBridgeCore;
 import com.yjy.superbridge.jsbridge.BridgeWebView;
+import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superjsbridgedemo.DSCompent.DSCore;
 import com.yjy.superjsbridgedemo.DSCompent.DSWebClient;
 import com.yjy.superjsbridgedemo.DSCompent.DSWebView;
@@ -29,10 +32,24 @@ public class JsBridgeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_js_bridge);
         final BridgeWebView view = findViewById(R.id.webView);
 //
-        Bridge bridge =  new Bridge.Builder(view)
+        final Bridge bridge =  new Bridge.Builder(view)
                 .registerInterface("JsTest",new JsTest())
                 .build();
 
-        view.loadUrl("file:///android_asset/js-call-native.html");
+        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bridge.callHandler("functionInJs","test test",new CallBackFunction(){
+                    @Override
+                    public void onCallBack(String data) {
+                        Toast.makeText(JsBridgeActivity.this,data,Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+
+
+        view.loadUrl("file:///android_asset/demo.html");
     }
 }
