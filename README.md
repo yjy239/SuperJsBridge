@@ -5,6 +5,11 @@ SuperJsBridge 可以使用默认的老式大头鬼的jsbridge，就是通过拦�
 也支持自定义。
 
 # 如何使用：
+```
+	dependencies {
+	        implementation 'com.github.yjy239:SuperJsBridge:Tag'
+	}
+```
 
 ## native 调用js或者native提供方法给js
 
