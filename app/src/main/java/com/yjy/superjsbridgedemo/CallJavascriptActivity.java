@@ -2,10 +2,12 @@ package com.yjy.superjsbridgedemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.yjy.superbridge.internal.Bridge;
+import com.yjy.superbridge.internal.BridgeInterceptor;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superjsbridgedemo.DSCompent.DSCore;
 import com.yjy.superjsbridgedemo.DSCompent.DSWebClient;
@@ -46,6 +48,19 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
         //请注意DsBridge 为了接口统一，只暴露了统一的接口，单参数进入和回调接口
         bridge =  new Bridge.Builder(dWebView)
                 .setClientAndCore(new DSCore(dWebView),new DSWebClient())
+                .addInterceptor(new BridgeInterceptor() {
+                    @Override
+                    public boolean receiverInterceptor(Object data, Object function) {
+                        Log.e("calljs","--------------");
+                        return true;
+                    }
+
+                    @Override
+                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                        Log.e("callNative","--------------");
+                        return true;
+                    }
+                })
                 .build();
 
 

@@ -1,10 +1,9 @@
 package com.yjy.superjsbridgedemo;
 
 import android.util.Log;
-import android.webkit.JavascriptInterface;
-import android.widget.Toast;
 
-import com.yjy.superbridge.jsbridge.BridgeHandler;
+import com.yjy.superbridge.internal.BridgeInterface;
+import com.yjy.superbridge.internal.ReceiverBridge;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
 /**
@@ -16,7 +15,7 @@ import com.yjy.superbridge.jsbridge.CallBackFunction;
  *     github:yjy239@gitub.com
  * </pre>
  */
-public class JsTest {
+public class JsTest extends BridgeInterface {
 
     public void test1(String s){
         Log.e("JSTest",s) ;
@@ -24,8 +23,9 @@ public class JsTest {
 
 
 
+    @ReceiverBridge
     public void submitFromWeb(String s2, CallBackFunction function){
-       function.onCallBack("response: "+s2);
+       function.onCallBack("submitFromWeb response: "+s2);
     }
 
 

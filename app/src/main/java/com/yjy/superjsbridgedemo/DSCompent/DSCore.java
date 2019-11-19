@@ -1,10 +1,13 @@
 package com.yjy.superjsbridgedemo.DSCompent;
 
+import com.yjy.superbridge.internal.BaseBridgeCore;
 import com.yjy.superbridge.internal.IBridgeCore;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superjsbridgedemo.DSBridge.DWebView;
 import com.yjy.superjsbridgedemo.DSBridge.OnReturnValue;
+
+import java.util.ArrayList;
 
 /**
  * <pre>
@@ -15,8 +18,9 @@ import com.yjy.superjsbridgedemo.DSBridge.OnReturnValue;
  *     github:yjy239@gitub.com
  * </pre>
  */
-public class DSCore implements IBridgeCore {
+public class DSCore extends BaseBridgeCore {
     private DWebView mWebView;
+    ArrayList<String> mKeys = new ArrayList<>();
 
     public DSCore(DWebView webView){
         this.mWebView = webView;
@@ -43,6 +47,7 @@ public class DSCore implements IBridgeCore {
         if(mWebView == null){
             return;
         }
+        mKeys.add(name);
         mWebView.addJavascriptObject(obj,name);
     }
 
@@ -70,5 +75,9 @@ public class DSCore implements IBridgeCore {
         }else{
             mWebView.callHandler(handlerName,new Object[]{data},retValue);
         }
+    }
+
+    @Override
+    public void release() {
     }
 }

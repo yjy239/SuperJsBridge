@@ -5,6 +5,8 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 
 
+import com.yjy.superbridge.internal.BaseBridgeCore;
+import com.yjy.superbridge.internal.BridgeInterceptor;
 import com.yjy.superbridge.internal.IBridgeCore;
 import com.yjy.superbridge.internal.IWebView;
 
@@ -22,7 +24,7 @@ import java.util.Map;
  *     github:yjy239@gitub.com
  * </pre>
  */
-public class JsBridgeCore implements IBridgeCore,WebViewJavascriptBridge{
+public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBridge{
     private final String TAG = "JsBridgeCore";
 
     public static final String toLoadJs = "WebViewJavascriptBridge.js";
@@ -32,6 +34,7 @@ public class JsBridgeCore implements IBridgeCore,WebViewJavascriptBridge{
 
 
     private List<Message> startupMessage = new ArrayList<Message>();
+
 
 
     //刷新js中的queue
@@ -203,6 +206,13 @@ public class JsBridgeCore implements IBridgeCore,WebViewJavascriptBridge{
     @Override
     public void callHandler(String handlerName, String data, CallBackFunction callBack) {
         doSend(handlerName, data, callBack);
+    }
+
+
+
+    @Override
+    public void release() {
+
     }
 
 

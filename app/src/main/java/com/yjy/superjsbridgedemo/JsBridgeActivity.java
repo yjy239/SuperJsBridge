@@ -3,19 +3,15 @@ package com.yjy.superjsbridgedemo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.yjy.superbridge.internal.Bridge;
-import com.yjy.superbridge.internal.IBridgeCore;
+import com.yjy.superbridge.internal.BridgeInterceptor;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.BridgeWebView;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
-import com.yjy.superjsbridgedemo.DSCompent.DSCore;
-import com.yjy.superjsbridgedemo.DSCompent.DSWebClient;
-import com.yjy.superjsbridgedemo.DSCompent.DSWebView;
-import com.yjy.superjsbridgedemo.DSCompent.JsApi;
-import com.yjy.superjsbridgedemo.DSCompent.JsEchoApi;
 
 /**
  * <pre>
@@ -35,6 +31,19 @@ public class JsBridgeActivity extends AppCompatActivity {
 //
         final Bridge bridge =  new Bridge.Builder(view)
                 .registerInterface("JsTest",new JsTest())
+                .addInterceptor(new BridgeInterceptor<String,CallBackFunction>() {
+                    @Override
+                    public boolean receiverInterceptor(String data, CallBackFunction function) {
+                        Log.e("calljs","--------------");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                        Log.e("callNative","--------------");
+                        return false;
+                    }
+                })
                 .build();
 
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {

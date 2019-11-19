@@ -1,16 +1,12 @@
 package com.yjy.superbridge.internal;
 
-import android.webkit.JavascriptInterface;
-import android.webkit.WebViewClient;
-
 import com.yjy.superbridge.jsbridge.BridgeHandler;
-import com.yjy.superbridge.jsbridge.BridgeWebViewClient;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
-import com.yjy.superbridge.jsbridge.JsBridgeCore;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.Map;
+import java.util.List;
 
 /**
  * <pre>
@@ -22,29 +18,23 @@ import java.util.Map;
  * </pre>
  */
 public class BridgeHelper {
-    public static void init(IWebView webView,Object obj,String name,boolean isLow){
-        JsBridgeCore core = new JsBridgeCore(webView);
-        if(isLow){
-            registerInLow(obj,core);
-        }else {
-            webView.addJavascriptInterface(obj,name);
-        }
-
-        WebViewClient client = new BridgeWebViewClient(core);
-        webView.setWebViewClient(client);
-    }
 
 
-    public static void registerInLow(Object obj,IBridgeCore core){
+
+    public static void registerInLow(Object obj, IBridgeCore core,List<BridgeInterceptor> interceptors){
         if(obj != null){
             Method[] methods = obj.getClass().getDeclaredMethods();
             for (int i = 0;i<methods.length;i++){
                 final Method method = methods[i];
+                int modify = method.getModifiers();
                 Type type = method.getReturnType();
-                if(type == void.class||type==String.class){
-                    register(obj,type,method,core);
-                }else {
-                    throw new IllegalArgumentException("return type must be String or Void");
+                ReceiverBridge bridge = method.getAnnotation(ReceiverBridge.class);
+                if(bridge != null&&modify == Modifier.PUBLIC){
+                    if(type == void.class||type==String.class){
+                        register(obj,type,method,interceptors,core);
+                    }else {
+                        throw new IllegalArgumentException("return type must be String or Void");
+                    }
                 }
             }
         }
@@ -52,7 +42,8 @@ public class BridgeHelper {
     }
 
 
-    private static void register(final Object obj, final Type type, final Method method, IBridgeCore core){
+    private static void register(final Object obj, final Type type, final Method method,List<BridgeInterceptor> interceptors,
+                                 IBridgeCore core){
         BridgeHandler handler = null;
 
 

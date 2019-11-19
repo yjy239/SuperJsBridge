@@ -3,6 +3,9 @@ package com.yjy.superbridge.internal;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <pre>
  *     @author : yjy
@@ -15,6 +18,19 @@ import com.yjy.superbridge.jsbridge.CallBackFunction;
 public interface IBridgeCore {
     void registerHandler(String handlerName, BridgeHandler handler);
     void unregisterHandler(String handlerName);
+
+    @SendBridge
     void callHandler(String handlerName, String data, CallBackFunction callBack);
+
+    void addInterceptor(BridgeInterceptor interceptor);
+
+    void removeInterceptor(BridgeInterceptor interceptor);
+
+    void setInterceptor(List<BridgeInterceptor> interceptors);
+
+    List<BridgeInterceptor> getInterceptor();
+
+
+    void release();
 
 }
