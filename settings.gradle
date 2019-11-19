@@ -1,1 +1,1 @@
-include ':app', ':superbridge'
+include ':app', ':superbridge', ':aspectjhelper'
