@@ -150,6 +150,40 @@ SuperBridge中借助AspectJ字节码技术，实现了拦截器功能。
     }
 ```
 
+可以使用addInterceptor api，增加拦截:
+```
+new Bridge.Builder(view)
+                .registerInterface("JsTest",new JsTest())
+                .addInterceptor(new BridgeInterceptor<String,CallBackFunction>() {
+                    @Override
+                    public boolean receiverInterceptor(String data, CallBackFunction function) {
+                        Log.e("calljs1","--------------");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                        Log.e("callNative1","--------------");
+                        return false;
+                    }
+                })
+                .addInterceptor(new BridgeInterceptor() {
+                    @Override
+                    public boolean receiverInterceptor(Object data, Object function) {
+                        Log.e("calljs2","--------------");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                        Log.e("callNative2","--------------");
+                        return true;
+                    }
+                })
+                .build();
+
+```
+
 ## 如何自定义
 在SuperJsBridge中，允许自定义。在demo中已经有一个自定义的DSBridge。
 
