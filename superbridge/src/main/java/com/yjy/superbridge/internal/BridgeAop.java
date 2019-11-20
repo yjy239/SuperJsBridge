@@ -25,23 +25,24 @@ public class BridgeAop {
         Object obj = null;
 
         BridgeInterface bridgeInterface = (BridgeInterface)joinPoint.getThis();
-        boolean isContinue = true;
+        //全部为false 才能不拦截继续下去
+        boolean isInterceptor = false;
         if(bridgeInterface != null){
             List<BridgeInterceptor> interceptors = bridgeInterface.getInterceptors();
             for(int i = 0;i<interceptors.size();i++){
                 Object[] args = joinPoint.getArgs();
                 if(args.length == 2){
-                    isContinue &= interceptors.get(i).receiverInterceptor(args[0],args[1]);
+                    isInterceptor |= interceptors.get(i).receiverInterceptor(args[0],args[1]);
                 }else if(args.length == 1){
-                    isContinue &= interceptors.get(i).receiverInterceptor(args[0],null);
+                    isInterceptor |= interceptors.get(i).receiverInterceptor(args[0],null);
                 }else if(args.length == 0){
-                    isContinue &= interceptors.get(i).receiverInterceptor(null,null);
+                    isInterceptor |= interceptors.get(i).receiverInterceptor(null,null);
                 }
             }
         }
 
 
-        if(!isContinue){
+        if(isInterceptor){
             return null;
         }
 
@@ -63,29 +64,29 @@ public class BridgeAop {
 
 
         IBridgeCore core = (IBridgeCore)joinPoint.getTarget();
-        boolean isContinue = true;
+        boolean isInterceptor = false;
         if(core != null){
             List<BridgeInterceptor> interceptors = core.getInterceptor();
             for(int i = 0;i<interceptors.size();i++){
                 Object[] args = joinPoint.getArgs();
                 if(args.length == 3){
-                    isContinue &= interceptors.get(i).sendInterceptor((String)args[0],(String)args[1],(CallBackFunction) args[2]);
+                    isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],(String)args[1],(CallBackFunction) args[2]);
                 }else if(args.length == 2){
                     if(args[1] instanceof CallBackFunction){
-                        isContinue &= interceptors.get(i).sendInterceptor((String)args[0],null,(CallBackFunction) args[1]);
+                        isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],null,(CallBackFunction) args[1]);
                     }else {
-                        isContinue &= interceptors.get(i).sendInterceptor((String)args[0],args[1].toString(),null );
+                        isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],args[1].toString(),null );
                     }
                 }else if(args.length == 1){
-                    isContinue &= interceptors.get(i).sendInterceptor((String)args[0],null,null);
+                    isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],null,null);
                 }else if(args.length == 0){
-                    isContinue &= interceptors.get(i).sendInterceptor(null,null,null);
+                    isInterceptor |= interceptors.get(i).sendInterceptor(null,null,null);
                 }
             }
         }
 
 
-        if(!isContinue){
+        if(isInterceptor){
             return null;
         }
 

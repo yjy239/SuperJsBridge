@@ -28,8 +28,8 @@ public class BridgeHelper {
                 final Method method = methods[i];
                 int modify = method.getModifiers();
                 Type type = method.getReturnType();
-                ReceiverBridge bridge = method.getAnnotation(ReceiverBridge.class);
-                if(bridge != null&&modify == Modifier.PUBLIC){
+                Type[] types = method.getParameterTypes();
+                if(modify == Modifier.PUBLIC&&types.length<=2){
                     if(type == void.class||type==String.class){
                         register(obj,type,method,interceptors,core);
                     }else {

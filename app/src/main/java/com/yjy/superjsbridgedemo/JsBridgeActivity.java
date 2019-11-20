@@ -34,14 +34,27 @@ public class JsBridgeActivity extends AppCompatActivity {
                 .addInterceptor(new BridgeInterceptor<String,CallBackFunction>() {
                     @Override
                     public boolean receiverInterceptor(String data, CallBackFunction function) {
-                        Log.e("calljs","--------------");
+                        Log.e("calljs1","--------------");
                         return false;
                     }
 
                     @Override
                     public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
-                        Log.e("callNative","--------------");
+                        Log.e("callNative1","--------------");
                         return false;
+                    }
+                })
+                .addInterceptor(new BridgeInterceptor() {
+                    @Override
+                    public boolean receiverInterceptor(Object data, Object function) {
+                        Log.e("calljs2","--------------");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                        Log.e("callNative2","--------------");
+                        return true;
                     }
                 })
                 .build();
