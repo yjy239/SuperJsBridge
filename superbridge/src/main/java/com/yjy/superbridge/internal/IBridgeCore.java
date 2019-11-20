@@ -19,7 +19,6 @@ public interface IBridgeCore {
     void registerHandler(String handlerName, BridgeHandler handler);
     void unregisterHandler(String handlerName);
 
-    @SendBridge
     void callHandler(String handlerName, String data, CallBackFunction callBack);
 
     void addInterceptor(BridgeInterceptor interceptor);

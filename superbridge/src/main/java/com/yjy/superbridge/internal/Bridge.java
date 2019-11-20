@@ -83,6 +83,7 @@ public class Bridge {
 
 
     public void release(){
+        mCore.release();
         mCore = null;
     }
 
@@ -123,11 +124,14 @@ public class Bridge {
                 client = new BridgeWebViewClient((JsBridgeCore)core);
             }
 
+            core.setInterceptor(mInterceptors);
 
             for(Map.Entry<String,BridgeInterface> entry : observableMap.entrySet()){
                 entry.getValue().setInterceptors(mInterceptors);
                 BridgeHelper.registerInLow(entry.getValue(),core,mInterceptors);
             }
+
+
 
             webView.setWebViewClient(client);
 
@@ -146,6 +150,7 @@ public class Bridge {
             }
 
 
+            core.setInterceptor(mInterceptors);
 
             for(Map.Entry<String,BridgeInterface> entry : observableMap.entrySet()){
                 entry.getValue().setInterceptors(mInterceptors);

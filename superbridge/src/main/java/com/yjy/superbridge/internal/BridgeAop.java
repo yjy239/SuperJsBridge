@@ -1,7 +1,5 @@
 package com.yjy.superbridge.internal;
 
-import android.util.Log;
-
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -24,7 +22,6 @@ public class BridgeAop {
 
     @Around("execution(@com.yjy.superbridge.internal.ReceiverBridge * *(..)) && @annotation(bridge)")
     public Object receiverInterceptor(final ProceedingJoinPoint joinPoint, ReceiverBridge bridge){
-        Log.e("ReceiverBridge","------------"+joinPoint.getArgs()[0]+"  "+joinPoint.getTarget()+" "+joinPoint.getThis());
         Object obj = null;
 
         BridgeInterface bridgeInterface = (BridgeInterface)joinPoint.getThis();
@@ -60,9 +57,8 @@ public class BridgeAop {
 
 
 
-    @Around("call(@com.yjy.superbridge.internal.SendBridge * *(..)) && @annotation(bridge)")
+    @Around("execution(@com.yjy.superbridge.internal.SendBridge * *(..)) && @annotation(bridge)")
     public Object sendInterceptor(final ProceedingJoinPoint joinPoint, SendBridge bridge){
-        Log.e("SendBridge","------------"+joinPoint.getArgs()[0]+"  "+joinPoint.getTarget()+" "+joinPoint.getThis());
         Object obj = null;
 
 

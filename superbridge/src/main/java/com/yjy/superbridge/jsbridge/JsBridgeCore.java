@@ -9,6 +9,7 @@ import com.yjy.superbridge.internal.BaseBridgeCore;
 import com.yjy.superbridge.internal.BridgeInterceptor;
 import com.yjy.superbridge.internal.IBridgeCore;
 import com.yjy.superbridge.internal.IWebView;
+import com.yjy.superbridge.internal.SendBridge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -204,6 +205,7 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
      * @param callBack CallBackFunction
      */
     @Override
+    @SendBridge
     public void callHandler(String handlerName, String data, CallBackFunction callBack) {
         doSend(handlerName, data, callBack);
     }
@@ -212,7 +214,7 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
 
     @Override
     public void release() {
-
+        mWebView = null;
     }
 
 

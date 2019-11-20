@@ -2,6 +2,7 @@ package com.yjy.superjsbridgedemo.DSCompent;
 
 import com.yjy.superbridge.internal.BaseBridgeCore;
 import com.yjy.superbridge.internal.IBridgeCore;
+import com.yjy.superbridge.internal.SendBridge;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superjsbridgedemo.DSBridge.DWebView;
@@ -52,10 +53,12 @@ public class DSCore extends BaseBridgeCore {
     }
 
     @Override
+    @SendBridge
     public void callHandler(String handlerName, final String data, final CallBackFunction callBack) {
         if(mWebView == null){
             return;
         }
+
 
         OnReturnValue retValue = new OnReturnValue<Object>() {
             @Override
