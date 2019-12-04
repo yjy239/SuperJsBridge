@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
+import org.aspectj.lang.NoAspectBoundException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,6 +22,8 @@ import java.util.List;
  */
 @Aspect
 public class BridgeAop {
+
+    private static BridgeAop sInstance;
 
     @Around("execution(@com.yjy.superbridge.internal.ReceiverBridge * *(..)) && @annotation(bridge)")
     public Object receiverInterceptor(final ProceedingJoinPoint joinPoint, ReceiverBridge bridge){
@@ -107,4 +110,28 @@ public class BridgeAop {
         return obj;
 
     }
+
+    static Throwable mCause;
+
+    public static BridgeAop aspectOf() {
+        if (sInstance == null) {
+            throw new NoAspectBoundException("com.yjy.superbridge.internal.BridgeAop", mCause);
+        } else {
+            return sInstance;
+        }
+    }
+
+    public static boolean hasAspect() {
+        return sInstance != null;
+    }
+
+    static {
+        try {
+            sInstance = new BridgeAop();
+        } catch (Throwable var1) {
+            mCause = var1;
+        }
+
+    }
+
 }
