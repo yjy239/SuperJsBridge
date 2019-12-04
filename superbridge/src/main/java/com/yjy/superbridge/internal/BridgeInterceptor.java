@@ -13,7 +13,7 @@ import com.yjy.superbridge.jsbridge.CallBackFunction;
  */
 public interface BridgeInterceptor<D,F> {
 
-    boolean receiverInterceptor(D data, F function);
+    boolean receiverInterceptor(String handlerName, D data, F function);
 
     boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack);
 }

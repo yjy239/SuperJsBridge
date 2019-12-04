@@ -1,5 +1,7 @@
 package com.yjy.superbridge.internal;
 
+import android.util.Log;
+
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -24,6 +26,8 @@ public class BridgeAop {
     public Object receiverInterceptor(final ProceedingJoinPoint joinPoint, ReceiverBridge bridge){
         Object obj = null;
 
+        String name = joinPoint.getSignature().getName();
+
         BridgeInterface bridgeInterface = (BridgeInterface)joinPoint.getThis();
         //全部为false 才能不拦截继续下去
         boolean isInterceptor = false;
@@ -31,12 +35,15 @@ public class BridgeAop {
             List<BridgeInterceptor> interceptors = bridgeInterface.getInterceptors();
             for(int i = 0;i<interceptors.size();i++){
                 Object[] args = joinPoint.getArgs();
+                if(interceptors.get(i) == null){
+                    continue;
+                }
                 if(args.length == 2){
-                    isInterceptor |= interceptors.get(i).receiverInterceptor(args[0],args[1]);
+                    isInterceptor |= interceptors.get(i).receiverInterceptor(name, args[0], args[1]);
                 }else if(args.length == 1){
-                    isInterceptor |= interceptors.get(i).receiverInterceptor(args[0],null);
+                    isInterceptor |= interceptors.get(i).receiverInterceptor(name, args[0], null);
                 }else if(args.length == 0){
-                    isInterceptor |= interceptors.get(i).receiverInterceptor(null,null);
+                    isInterceptor |= interceptors.get(i).receiverInterceptor(name, null, null);
                 }
             }
         }

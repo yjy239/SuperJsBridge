@@ -15,8 +15,6 @@ import com.yjy.superjsbridgedemo.DSCompent.DSWebView;
 import com.yjy.superjsbridgedemo.DSCompent.JsApi;
 import com.yjy.superjsbridgedemo.DSCompent.JsEchoApi;
 
-import org.json.JSONObject;
-
 
 public class JavascriptCallNativeActivity extends AppCompatActivity {
 
@@ -34,14 +32,14 @@ public class JavascriptCallNativeActivity extends AppCompatActivity {
                 .registerInterface("echo",new JsEchoApi())
                 .addInterceptor(new BridgeInterceptor<Object,CompletionHandler>() {
                     @Override
-                    public boolean receiverInterceptor(Object data, CompletionHandler function) {
-                        Log.e("calljs","--------------"+function);
+                    public boolean receiverInterceptor(String handlerName, Object data, CompletionHandler function) {
+                        Log.e("calljs",handlerName+"--------------"+data);
                         return true;
                     }
 
                     @Override
                     public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
-                        Log.e("callNative","--------------");
+                        Log.e("callNative",handlerName+"--------------"+data);
                         return true;
                     }
                 })

@@ -50,14 +50,14 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
                 .setClientAndCore(new DSCore(dWebView),new DSWebClient())
                 .addInterceptor(new BridgeInterceptor() {
                     @Override
-                    public boolean receiverInterceptor(Object data, Object function) {
-                        Log.e("calljs","--------------");
+                    public boolean receiverInterceptor(String handlerName, Object data, Object function) {
+                        Log.e("calljs",handlerName+"--------------"+data);
                         return true;
                     }
 
                     @Override
                     public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
-                        Log.e("callNative","--------------");
+                        Log.e("callNative",handlerName+"--------------");
                         return true;
                     }
                 })
