@@ -1,23 +1,36 @@
 # SuperJsBridge
 [![](https://jitpack.io/v/yjy239/SuperJsBridge.svg)](https://jitpack.io/#yjy239/SuperJsBridge)
-一个对主流的JsBridge以及DsBridge的抽象合并其实就是为了方便native Java端的开发。
+一个对主流的JsBridge以及DsBridge的抽象合并，自带拦截器功能的js通信库。其实就是为了方便native Java端的开发。
 
 SuperJsBridge 可以使用默认的老式大头鬼的jsbridge，就是通过拦截url协议的jsbridge。
 也支持自定义。
 
 # 如何使用：
+请依赖：
 ```
 	dependencies {
-	        implementation 'com.github.yjy239:SuperJsBridge:1.0'
+	        implementation 'com.github.yjy239.SuperJsBridge:superbridge:1.1'
 	}
 ```
+
+如果使用拦截器，需要在根部build.gradle，添加如下classpath：
+```
+classpath 'com.github.yjy239:AspectJHelper:1.0'
+```
+
+
+并且在每一个模块，主工程中加入
+```
+apply plugin: 'com.yjy.aspectjhelper'
+```
+值得一提的是，这个gradle插件本质上就是处理ascpectJ扫描时候需要写的冗余gradle脚本。如果需要使用ascpectJ又觉得写ascpectJ的gradle脚本麻烦，不放使用这个扫描插件
 
 ## native 调用js或者native提供方法给js
 
 ### native 注册方法提供js调用
-首先可以通过声明一个类，里面全部都是注册到jsBridge中的方法:
+首先可以通过声明一个继承BridgeInterface类，里面全部都是注册到jsBridge中的方法:
 ```
-public class JsTest {
+public class JsTest extends BridgeInterface{
     public void test1(String s){
         Log.e("JSTest",s) ;
     }
@@ -113,6 +126,62 @@ js的使用方式和大头鬼的jsBridge使用一致:
                     document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
                 }
             );
+```
+
+## 关于拦截器
+SuperBridge中借助AspectJ字节码技术，实现了拦截器功能。
+
+拦截器分为2种:
+- 1.接受拦截器，是指js调用原生方法之后，在原生方法接受js参数之前进行了拦截，一般加上注解@ReceiverBridge
+```
+    @ReceiverBridge
+    public void submitFromWeb(String s2, CallBackFunction function){
+       function.onCallBack("submitFromWeb response: "+s2);
+    }
+```
+
+- 2.发送拦截器，一般是指原生调用js之后，js获取到原生发送的参数之前进行了拦截,一般加上注解@SendBridge
+一般的，在SuperBridge内部已经在Core中的callHandler方法中加上，使用如下:
+```
+    @Override
+    @SendBridge
+    public void callHandler(String handlerName, String data, CallBackFunction callBack) {
+        doSend(handlerName, data, callBack);
+    }
+```
+
+可以使用addInterceptor api，增加拦截:
+```
+new Bridge.Builder(view)
+                .registerInterface("JsTest",new JsTest())
+                .addInterceptor(new BridgeInterceptor<String,CallBackFunction>() {
+                    @Override
+                    public boolean receiverInterceptor(String data, CallBackFunction function) {
+                        Log.e("calljs1","--------------");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                        Log.e("callNative1","--------------");
+                        return false;
+                    }
+                })
+                .addInterceptor(new BridgeInterceptor() {
+                    @Override
+                    public boolean receiverInterceptor(Object data, Object function) {
+                        Log.e("calljs2","--------------");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                        Log.e("callNative2","--------------");
+                        return true;
+                    }
+                })
+                .build();
+
 ```
 
 ## 如何自定义
