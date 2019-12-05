@@ -141,14 +141,8 @@ SuperBridge中借助AspectJ字节码技术，实现了拦截器功能。
 ```
 
 - 2.发送拦截器，一般是指原生调用js之后，js获取到原生发送的参数之前进行了拦截,一般加上注解@SendBridge
-一般的，在SuperBridge内部已经在Core中的callHandler方法中加上，使用如下:
-```
-    @Override
-    @SendBridge
-    public void callHandler(String handlerName, String data, CallBackFunction callBack) {
-        doSend(handlerName, data, callBack);
-    }
-```
+一般的，在SuperBridge内部已经在Core中的callHandler方法中加上。
+
 
 可以使用addInterceptor api，增加拦截:
 ```
@@ -183,6 +177,8 @@ new Bridge.Builder(view)
                 .build();
 
 ```
+接受拦截器拦截器将会回调receiverInterceptor方法，发送拦截器回调sendInterceptor。一旦某一个拦截器返回true，将不会继续执行
+
 
 ## 如何自定义
 在SuperJsBridge中，允许自定义。在demo中已经有一个自定义的DSBridge。
@@ -190,18 +186,20 @@ new Bridge.Builder(view)
 自定义需要做如下的事情：
 - 1.自定义IBridgeCore，这是Bridge的核心操作类
 ```
-public class DSCore implements IBridgeCore {
+public class DSCore extends BaseBridgeCore {
     private DWebView mWebView;
+    ArrayList<String> mKeys = new ArrayList<>();
 
     public DSCore(DWebView webView){
         this.mWebView = webView;
     }
 
     @Override
-    public void registerHandler(String handlerName, BridgeHandler handler) {
+    public void registerHandler(String handlerName, BridgeHandler handler, boolean isInterceptor) {
         if(mWebView == null){
             return;
         }
+
 
 
     }
@@ -218,14 +216,20 @@ public class DSCore implements IBridgeCore {
         if(mWebView == null){
             return;
         }
+        mKeys.add(name);
         mWebView.addJavascriptObject(obj,name);
     }
 
     @Override
-    public void callHandler(String handlerName, final String data, final CallBackFunction callBack) {
+    public void callHandler(String handlerName, final String data, final CallBackFunction callBack, boolean isInterceptor) {
         if(mWebView == null){
             return;
         }
+        Object[] args = {handlerName,data,callBack};
+        if(BridgeHelper.iterSendInterceptor(this,args)){
+            return;
+        }
+
 
         OnReturnValue retValue = new OnReturnValue<Object>() {
             @Override
@@ -245,6 +249,15 @@ public class DSCore implements IBridgeCore {
         }else{
             mWebView.callHandler(handlerName,new Object[]{data},retValue);
         }
+    }
+
+    @Override
+    public void registerObj(String name, Object obj) {
+        addJsObject(obj,name);
+    }
+
+    @Override
+    public void release() {
     }
 }
 ```
@@ -269,12 +282,7 @@ public class DSWebView extends DWebView implements IWebView {
                 .registerInterface("JsTest",new JsTest())
                 .registerInterface(null,new JsApi())
                 .registerInterface("echo",new JsEchoApi())
-                .build(new Bridge.IBuilder() {
-                    @Override
-                    public void build(String name, Object obj, IBridgeCore core) {
-                        ((DSCore)core).addJsObject(obj,name);
-                    }
-                });
+                .build();
 
 ```
 在这里允许自己在build方法中处理自己的注入逻辑。由于DsBridge的核心原理是构建一个隐藏的_dsbridge的JS对象，
