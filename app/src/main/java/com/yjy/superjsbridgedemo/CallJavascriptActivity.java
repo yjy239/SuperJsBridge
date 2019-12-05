@@ -58,7 +58,7 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
                     @Override
                     public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
                         Log.e("callNative",handlerName+"--------------");
-                        return true;
+                        return false;
                     }
                 })
                 .build();
@@ -85,7 +85,7 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
                     public void onCallBack(String data) {
                         showToast(data);
                     }
-                });
+                },true);
                 break;
             case R.id.append:
                 dWebView.callHandler("append", new Object[]{"I", "love", "you"}, new OnReturnValue<String>() {
