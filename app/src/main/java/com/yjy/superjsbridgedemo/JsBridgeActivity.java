@@ -35,7 +35,7 @@ public class JsBridgeActivity extends AppCompatActivity {
                     @Override
                     public boolean receiverInterceptor(String handlerName, String data, CallBackFunction function) {
                         Log.e("calljs1","--------------"+data);
-                        return false;
+                        return true;
                     }
 
                     @Override
@@ -67,16 +67,16 @@ public class JsBridgeActivity extends AppCompatActivity {
                     public void onCallBack(String data) {
                         Toast.makeText(JsBridgeActivity.this,data,Toast.LENGTH_SHORT).show();
                     }
-                });
+                },false);
             }
         });
 
-        bridge.registerHandler("test3", new BridgeHandler() {
+        bridge.registerHandler("submitFromWeb", new BridgeHandler() {
             @Override
             public void handler(String data, CallBackFunction function) {
                 function.onCallBack("response: data");
             }
-        });
+        },true);
 
 
 

@@ -48,59 +48,14 @@ public class BridgeAop {
                 }else if(args.length == 0){
                     isInterceptor |= interceptors.get(i).receiverInterceptor(name, null, null);
                 }
-            }
-        }
 
-
-        if(isInterceptor){
-            return null;
-        }
-
-        try {
-            obj = joinPoint.proceed();
-        }catch (Throwable  e){
-            e.printStackTrace();
-        }
-
-        return obj;
-
-    }
-
-
-
-    @Around("execution(@com.yjy.superbridge.internal.SendBridge * *(..)) && @annotation(bridge)")
-    public Object sendInterceptor(final ProceedingJoinPoint joinPoint, SendBridge bridge){
-        Object obj = null;
-
-
-        IBridgeCore core = (IBridgeCore)joinPoint.getTarget();
-        boolean isInterceptor = false;
-        if(core != null){
-            List<BridgeInterceptor> interceptors = core.getInterceptor();
-            for(int i = 0;i<interceptors.size();i++){
-                Object[] args = joinPoint.getArgs();
-                if(args.length == 3){
-                    isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],(String)args[1],(CallBackFunction) args[2]);
-                }else if(args.length == 2){
-                    if(args[1] instanceof CallBackFunction){
-                        isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],null,(CallBackFunction) args[1]);
-                    }else {
-                        isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],args[1].toString(),null );
-                    }
-                }else if(args.length == 1){
-                    isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],null,null);
-                }else if(args.length == 0){
-                    isInterceptor |= interceptors.get(i).sendInterceptor(null,null,null);
+                if(isInterceptor){
+                    return null;
                 }
             }
         }
 
 
-        if(isInterceptor){
-            return null;
-        }
-
-
         try {
             obj = joinPoint.proceed();
         }catch (Throwable  e){
@@ -110,6 +65,51 @@ public class BridgeAop {
         return obj;
 
     }
+
+
+
+//    @Around("execution(@com.yjy.superbridge.internal.SendBridge * *(..)) && @annotation(bridge)")
+//    public Object sendInterceptor(final ProceedingJoinPoint joinPoint, SendBridge bridge){
+//        Object obj = null;
+//
+//
+//        IBridgeCore core = (IBridgeCore)joinPoint.getTarget();
+//        boolean isInterceptor = false;
+//        if(core != null){
+//            List<BridgeInterceptor> interceptors = core.getInterceptor();
+//            for(int i = 0;i<interceptors.size();i++){
+//                Object[] args = joinPoint.getArgs();
+//                if(args.length == 3){
+//                    isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],(String)args[1],(CallBackFunction) args[2]);
+//                }else if(args.length == 2){
+//                    if(args[1] instanceof CallBackFunction){
+//                        isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],null,(CallBackFunction) args[1]);
+//                    }else {
+//                        isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],args[1].toString(),null );
+//                    }
+//                }else if(args.length == 1){
+//                    isInterceptor |= interceptors.get(i).sendInterceptor((String)args[0],null,null);
+//                }else if(args.length == 0){
+//                    isInterceptor |= interceptors.get(i).sendInterceptor(null,null,null);
+//                }
+//            }
+//        }
+//
+//
+//        if(isInterceptor){
+//            return null;
+//        }
+//
+//
+//        try {
+//            obj = joinPoint.proceed();
+//        }catch (Throwable  e){
+//            e.printStackTrace();
+//        }
+//
+//        return obj;
+//
+//    }
 
     static Throwable mCause;
 

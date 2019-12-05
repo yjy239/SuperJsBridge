@@ -34,12 +34,16 @@ public class Bridge {
 
 
     public void registerHandler(String handlerName, BridgeHandler handler) {
+        registerHandler(handlerName, handler,false);
+    }
+
+
+    public void registerHandler(String handlerName, BridgeHandler handler,boolean isInterceptor) {
         if(mCore == null){
             return;
         }
-        mCore.registerHandler(handlerName,handler);
+        mCore.registerHandler(handlerName,handler,isInterceptor);
     }
-
 
     public void unregisterHandler(String handlerName) {
         if(mCore == null){
@@ -49,11 +53,15 @@ public class Bridge {
     }
 
 
-    public void callHandler(String handlerName, String data, CallBackFunction callBack) {
+    public void callHandler(String handlerName, String data, CallBackFunction callBack,boolean isInterceptor) {
         if(mCore == null){
             return;
         }
-        mCore.callHandler(handlerName,data,callBack);
+        mCore.callHandler(handlerName,data,callBack,isInterceptor);
+    }
+
+    public void callHandler(String handlerName, String data, CallBackFunction callBack) {
+        callHandler(handlerName,data,callBack,false);
     }
 
 
@@ -128,7 +136,7 @@ public class Bridge {
 
             for(Map.Entry<String,BridgeInterface> entry : observableMap.entrySet()){
                 entry.getValue().setInterceptors(mInterceptors);
-                BridgeHelper.registerInLow(entry.getValue(),core,mInterceptors);
+                core.registerObj(entry.getKey(),entry.getValue());
             }
 
 
@@ -139,31 +147,7 @@ public class Bridge {
 
         }
 
-        public Bridge build(IBuilder builder){
-            if(builder == null){
-                return null;
-            }
 
-            if(core == null||client == null){
-                core = new JsBridgeCore(webView);
-                client = new BridgeWebViewClient((JsBridgeCore)core);
-            }
-
-
-            core.setInterceptor(mInterceptors);
-
-            for(Map.Entry<String,BridgeInterface> entry : observableMap.entrySet()){
-                entry.getValue().setInterceptors(mInterceptors);
-                if(builder != null){
-                    builder.build(entry.getKey(),entry.getValue(),core);
-                }
-            }
-
-            webView.setWebViewClient(client);
-
-            return new Bridge(core);
-
-        }
 
 
 

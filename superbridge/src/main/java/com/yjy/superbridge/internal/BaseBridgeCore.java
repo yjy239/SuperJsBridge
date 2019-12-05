@@ -1,5 +1,6 @@
 package com.yjy.superbridge.internal;
 
+import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
 import java.util.ArrayList;
@@ -38,5 +39,14 @@ public abstract class BaseBridgeCore implements IBridgeCore{
         return mInterceptors;
     }
 
+    @Override
+    public void registerHandler(String handlerName, BridgeHandler handler) {
+        registerHandler(handlerName, handler,false);
+    }
 
+
+    @Override
+    public void callHandler(String handlerName, String data, CallBackFunction callBack) {
+        callHandler(handlerName, data, callBack,false);
+    }
 }

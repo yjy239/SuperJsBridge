@@ -4,12 +4,10 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
-
 import com.yjy.superbridge.internal.BaseBridgeCore;
-import com.yjy.superbridge.internal.BridgeInterceptor;
-import com.yjy.superbridge.internal.IBridgeCore;
+import com.yjy.superbridge.internal.BridgeHelper;
 import com.yjy.superbridge.internal.IWebView;
-import com.yjy.superbridge.internal.SendBridge;
+import com.yjy.superbridge.internal.ProxyHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,7 +172,10 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
      * @param handler BridgeHandler
      */
     @Override
-    public void registerHandler(String handlerName, BridgeHandler handler) {
+    public void registerHandler(String handlerName, BridgeHandler handler, boolean isInterceptor) {
+        if(isInterceptor){
+            handler = new ProxyHandler(this,handlerName,handler);
+        }
         if (handler != null) {
             // 添加至 Map<String, BridgeHandler>
             messageHandlers.put(handlerName, handler);
@@ -205,11 +206,18 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
      * @param callBack CallBackFunction
      */
     @Override
-    @SendBridge
-    public void callHandler(String handlerName, String data, CallBackFunction callBack) {
+    public void callHandler(String handlerName, String data, CallBackFunction callBack,boolean isInterceptor) {
+        Object[] args = {handlerName,data,callBack};
+        if(BridgeHelper.iterSendInterceptor(this,args)){
+            return;
+        }
         doSend(handlerName, data, callBack);
     }
 
+    @Override
+    public void registerObj(String name, Object obj) {
+        BridgeHelper.registerInLow(obj,this);
+    }
 
 
     @Override

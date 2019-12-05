@@ -17,9 +17,11 @@ import java.util.List;
  */
 public interface IBridgeCore {
     void registerHandler(String handlerName, BridgeHandler handler);
+    void registerHandler(String handlerName, BridgeHandler handler,boolean isInterceptor);
     void unregisterHandler(String handlerName);
 
     void callHandler(String handlerName, String data, CallBackFunction callBack);
+    void callHandler(String handlerName, String data, CallBackFunction callBack,boolean isInterceptor);
 
     void addInterceptor(BridgeInterceptor interceptor);
 
@@ -28,6 +30,8 @@ public interface IBridgeCore {
     void setInterceptor(List<BridgeInterceptor> interceptors);
 
     List<BridgeInterceptor> getInterceptor();
+
+    void registerObj(String name,Object obj);
 
 
     void release();

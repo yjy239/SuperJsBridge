@@ -43,12 +43,7 @@ public class JavascriptCallNativeActivity extends AppCompatActivity {
                         return true;
                     }
                 })
-                .build(new Bridge.IBuilder() {
-                    @Override
-                    public void build(String name, Object obj, IBridgeCore core) {
-                        ((DSCore)core).addJsObject(obj,name);
-                    }
-                });
+                .build();
 
         dwebView.loadUrl("file:///android_asset/js-call-native.html");
     }

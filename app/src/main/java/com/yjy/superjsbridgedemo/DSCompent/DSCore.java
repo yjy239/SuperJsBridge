@@ -1,8 +1,7 @@
 package com.yjy.superjsbridgedemo.DSCompent;
 
 import com.yjy.superbridge.internal.BaseBridgeCore;
-import com.yjy.superbridge.internal.IBridgeCore;
-import com.yjy.superbridge.internal.SendBridge;
+import com.yjy.superbridge.internal.BridgeHelper;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superjsbridgedemo.DSBridge.DWebView;
@@ -28,10 +27,11 @@ public class DSCore extends BaseBridgeCore {
     }
 
     @Override
-    public void registerHandler(String handlerName, BridgeHandler handler) {
+    public void registerHandler(String handlerName, BridgeHandler handler, boolean isInterceptor) {
         if(mWebView == null){
             return;
         }
+
 
 
     }
@@ -53,9 +53,12 @@ public class DSCore extends BaseBridgeCore {
     }
 
     @Override
-    @SendBridge
-    public void callHandler(String handlerName, final String data, final CallBackFunction callBack) {
+    public void callHandler(String handlerName, final String data, final CallBackFunction callBack, boolean isInterceptor) {
         if(mWebView == null){
+            return;
+        }
+        Object[] args = {handlerName,data,callBack};
+        if(BridgeHelper.iterSendInterceptor(this,args)){
             return;
         }
 
@@ -78,6 +81,11 @@ public class DSCore extends BaseBridgeCore {
         }else{
             mWebView.callHandler(handlerName,new Object[]{data},retValue);
         }
+    }
+
+    @Override
+    public void registerObj(String name, Object obj) {
+        addJsObject(obj,name);
     }
 
     @Override

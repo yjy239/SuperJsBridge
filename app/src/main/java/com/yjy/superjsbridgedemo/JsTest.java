@@ -23,10 +23,10 @@ public class JsTest extends BridgeInterface {
 
 
 
-    @ReceiverBridge
-    public void submitFromWeb(String s2, CallBackFunction function){
-       function.onCallBack("submitFromWeb response: "+s2);
-    }
+//    @ReceiverBridge
+//    public void submitFromWeb(String s2, CallBackFunction function){
+//       function.onCallBack("submitFromWeb response: "+s2);
+//    }
 
 
 
