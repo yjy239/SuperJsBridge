@@ -9,7 +9,7 @@ SuperJsBridge 可以使用默认的老式大头鬼的jsbridge，就是通过拦�
 请依赖：
 ```
 	dependencies {
-	        implementation 'com.github.yjy239.SuperJsBridge:superbridge:1.1'
+	        implementation 'com.github.yjy239.SuperJsBridge:superbridge:1.3'
 	}
 ```
 
