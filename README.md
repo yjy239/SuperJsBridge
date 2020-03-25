@@ -15,7 +15,7 @@ SuperJsBridge 可以使用默认的老式大头鬼的jsbridge，就是通过拦�
 
 如果使用拦截器，需要在根部build.gradle，添加如下classpath：
 ```
-classpath 'com.github.yjy239:AspectJHelper:1.0'
+classpath 'com.github.yjy239:AspectJHelper:1.1'
 ```
 
 
