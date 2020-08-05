@@ -1,12 +1,14 @@
-package com.yjy.superjsbridgedemo.DSCompent;
+package com.yjy.superjsbridgedemo;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import com.yjy.dsbridge.DSBridge.CompletionHandler;
 import com.yjy.superbridge.internal.BridgeInterface;
+import com.yjy.superbridge.internal.BridgeMethod;
+import com.yjy.superbridge.internal.CallBackHandler;
 import com.yjy.superbridge.internal.ReceiverBridge;
-import com.yjy.superjsbridgedemo.DSBridge.CompletionHandler;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,43 +19,43 @@ import org.json.JSONObject;
  */
 
 public class JsApi extends BridgeInterface {
-    @JavascriptInterface
-    @ReceiverBridge
+    @BridgeMethod
     public String testSyn(Object msg)  {
+        Log.e("Type",msg.getClass().toString());
         return msg + "［syn call］";
     }
 
-    @JavascriptInterface
-    @ReceiverBridge
-    public void testAsyn(Object msg, CompletionHandler<String> handler){
+    @BridgeMethod
+    public void testAsyn(Object msg, CallBackHandler<String> handler){
+        Log.e("Type",msg.getClass().toString());
         handler.complete(msg+" [ asyn call]");
     }
 
-    @JavascriptInterface
-    @ReceiverBridge
+    @BridgeMethod
     public String testNoArgSyn(Object arg) throws JSONException {
+        Log.e("Type",arg.getClass().toString());
         return  "testNoArgSyn called [ syn call]";
     }
 
-    @JavascriptInterface
-    @ReceiverBridge
-    public void testNoArgAsyn(Object arg, CompletionHandler<String> handler) {
+    @BridgeMethod
+    public void testNoArgAsyn(Object arg, CallBackHandler<String> handler) {
+        Log.e("Type",arg.getClass().toString());
         handler.complete( "testNoArgAsyn   called [ asyn call]");
     }
 
 
-    @JavascriptInterface
+    @BridgeMethod
     //without @JavascriptInterface annotation can't be called
-    @ReceiverBridge
     public String testNever(Object arg) throws JSONException {
+        Log.e("Type",arg.getClass().toString());
         JSONObject jsonObject= (JSONObject) arg;
+
         return jsonObject.getString("msg") + "[ never call]";
     }
 
-    @JavascriptInterface
-    @ReceiverBridge
-    public void callProgress(Object args, final CompletionHandler<Integer> handler) {
-
+    @BridgeMethod
+    public void callProgress(Object args, final CallBackHandler<Integer> handler) {
+        Log.e("Type",args.getClass().toString());
         new CountDownTimer(11000, 1000) {
             int i=10;
             @Override

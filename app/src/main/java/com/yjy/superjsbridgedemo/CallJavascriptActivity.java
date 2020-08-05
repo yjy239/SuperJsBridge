@@ -6,14 +6,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.yjy.dsbridge.DSCompent.DefaultDsBridgeFactory;
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.BridgeInterceptor;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
-import com.yjy.superjsbridgedemo.DSCompent.DSCore;
-import com.yjy.superjsbridgedemo.DSCompent.DSWebClient;
-import com.yjy.superjsbridgedemo.DSCompent.DSWebView;
-import com.yjy.superjsbridgedemo.DSBridge.DWebView;
-import com.yjy.superjsbridgedemo.DSBridge.OnReturnValue;
+import com.yjy.dsbridge.DSCompent.DSWebView;
+import com.yjy.dsbridge.DSBridge.DWebView;
+import com.yjy.dsbridge.DSBridge.OnReturnValue;
 
 
 public class CallJavascriptActivity extends AppCompatActivity implements View.OnClickListener {
@@ -47,16 +46,16 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
 
         //请注意DsBridge 为了接口统一，只暴露了统一的接口，单参数进入和回调接口
         bridge =  new Bridge.Builder(dWebView)
-                .setClientAndCore(new DSCore(dWebView),new DSWebClient())
+                .setClientFactory(new DefaultDsBridgeFactory(dWebView))
                 .addInterceptor(new BridgeInterceptor() {
                     @Override
-                    public boolean receiverInterceptor(String handlerName, Object data, Object function) {
+                    public boolean receiverInterceptor(String handlerName, Object data) {
                         Log.e("calljs",handlerName+"--------------"+data);
                         return true;
                     }
 
                     @Override
-                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                    public boolean sendInterceptor(String handlerName, Object data) {
                         Log.e("callNative",handlerName+"--------------");
                         return false;
                     }
@@ -82,7 +81,7 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
             case R.id.addValue:
                 bridge.callHandler("addValue", "3", new CallBackFunction() {
                     @Override
-                    public void onCallBack(String data) {
+                    public void complete(String data) {
                         showToast(data);
                     }
                 },true);
@@ -98,7 +97,7 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
             case R.id.startTimer:
                 bridge.callHandler("startTimer",null, new CallBackFunction(){
                     @Override
-                    public void onCallBack(String data) {
+                    public void complete(String data) {
                         showToast(data);
                     }
                 });
@@ -114,7 +113,7 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
             case R.id.synGetInfo:
                 bridge.callHandler("syn.getInfo",null, new CallBackFunction(){
                     @Override
-                    public void onCallBack(String data) {
+                    public void complete(String data) {
                         showToast(data);
                     }
                 });
@@ -130,7 +129,7 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
             case R.id.asynGetInfo:
                 bridge.callHandler("asyn.getInfo",null,  new CallBackFunction(){
                     @Override
-                    public void onCallBack(String data) {
+                    public void complete(String data) {
                         showToast(data);
                     }
                 });

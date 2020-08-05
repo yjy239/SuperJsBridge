@@ -4,16 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.yjy.dsbridge.DSCompent.DefaultDsBridgeFactory;
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.BridgeInterceptor;
-import com.yjy.superbridge.internal.IBridgeCore;
-import com.yjy.superbridge.jsbridge.CallBackFunction;
-import com.yjy.superjsbridgedemo.DSBridge.CompletionHandler;
-import com.yjy.superjsbridgedemo.DSCompent.DSCore;
-import com.yjy.superjsbridgedemo.DSCompent.DSWebClient;
-import com.yjy.superjsbridgedemo.DSCompent.DSWebView;
-import com.yjy.superjsbridgedemo.DSCompent.JsApi;
-import com.yjy.superjsbridgedemo.DSCompent.JsEchoApi;
+import com.yjy.dsbridge.DSBridge.CompletionHandler;
+import com.yjy.dsbridge.DSCompent.DSWebView;
 
 
 public class JavascriptCallNativeActivity extends AppCompatActivity {
@@ -26,21 +21,21 @@ public class JavascriptCallNativeActivity extends AppCompatActivity {
         // set debug mode
         DSWebView.setWebContentsDebuggingEnabled(true);
         Bridge bridge =  new Bridge.Builder(dwebView)
-                .setClientAndCore(new DSCore(dwebView),new DSWebClient())
+                .setClientFactory(new DefaultDsBridgeFactory(dwebView))
                 .registerInterface("JsTest",new JsTest())
                 .registerInterface(null,new JsApi())
                 .registerInterface("echo",new JsEchoApi())
                 .addInterceptor(new BridgeInterceptor<Object,CompletionHandler>() {
                     @Override
-                    public boolean receiverInterceptor(String handlerName, Object data, CompletionHandler function) {
+                    public boolean receiverInterceptor(String handlerName, Object data) {
                         Log.e("calljs",handlerName+"--------------"+data);
-                        return true;
+                        return false;
                     }
 
                     @Override
-                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                    public boolean sendInterceptor(String handlerName, Object data) {
                         Log.e("callNative",handlerName+"--------------"+data);
-                        return true;
+                        return false;
                     }
                 })
                 .build();

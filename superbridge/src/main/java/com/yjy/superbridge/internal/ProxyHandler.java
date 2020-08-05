@@ -1,7 +1,6 @@
 package com.yjy.superbridge.internal;
 
 import com.yjy.superbridge.jsbridge.BridgeHandler;
-import com.yjy.superbridge.jsbridge.CallBackFunction;
 
 /**
  * <pre>
@@ -25,7 +24,7 @@ public class ProxyHandler implements BridgeHandler {
     }
 
     @Override
-    public void handler(String data, CallBackFunction function) {
+    public void handler(String data, CallBackHandler<String> function) {
         if(mInnerHandler != null&&mCore!=null){
             Object[] args = {data,function};
             if(BridgeHelper.iterReceiveInterceptor(mCore,mName,args)){

@@ -4,14 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
+import com.yjy.superbridge.internal.IBridgeClient;
 import com.yjy.superbridge.internal.IWebView;
 
 
 @SuppressLint("SetJavaScriptEnabled")
 public class BridgeWebView extends WebView implements IWebView {
-
-	private  JsBridgeCore mCore;
 
 
 	public BridgeWebView(Context context, AttributeSet attrs) {
@@ -37,12 +37,11 @@ public class BridgeWebView extends WebView implements IWebView {
 		this.getSettings().setJavaScriptEnabled(true);
 	}
 
+	@Override
+	public void setClient(IBridgeClient client) {
+		if(client instanceof WebViewClient){
+			setWebViewClient((WebViewClient)client);
+		}
 
-
-
-
-
-
-
-
+	}
 }

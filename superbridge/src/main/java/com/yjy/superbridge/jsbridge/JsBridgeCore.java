@@ -79,7 +79,7 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
         CallBackFunction f = responseCallbacks.get(functionName);
         String data = BridgeUtil.getDataFromReturnUrl(url);
         if (f != null) {
-            f.onCallBack(data);
+            f.complete(data);
             responseCallbacks.remove(functionName);
             return;
         }
@@ -216,7 +216,7 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
 
     @Override
     public void registerObj(String name, Object obj) {
-        BridgeHelper.registerInLow(obj,this);
+        BridgeHelper.registerInLow(name,obj,this,true);
     }
 
 
@@ -234,7 +234,7 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
             loadUrl(BridgeUtil.JS_FETCH_QUEUE_FROM_JAVA, new CallBackFunction() {
 
                 @Override
-                public void onCallBack(String data) {
+                public void complete(String data) {
                     // deserializeMessage 反序列化消息
                     List<Message> list = null;
                     try {
@@ -254,7 +254,7 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
                         if (!TextUtils.isEmpty(responseId)) {
                             CallBackFunction function = responseCallbacks.get(responseId);
                             String responseData = m.getResponseData();
-                            function.onCallBack(responseData);
+                            function.complete(responseData);
                             responseCallbacks.remove(responseId);
                         } else {
                             CallBackFunction responseFunction = null;
@@ -263,7 +263,7 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
                             if (!TextUtils.isEmpty(callbackId)) {
                                 responseFunction = new CallBackFunction() {
                                     @Override
-                                    public void onCallBack(String data) {
+                                    public void complete(String data) {
                                         Message responseMsg = new Message();
                                         responseMsg.setResponseId(callbackId);
                                         responseMsg.setResponseData(data);
@@ -273,7 +273,7 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
                             } else {
                                 responseFunction = new CallBackFunction() {
                                     @Override
-                                    public void onCallBack(String data) {
+                                    public void complete(String data) {
                                         // do nothing
                                     }
                                 };

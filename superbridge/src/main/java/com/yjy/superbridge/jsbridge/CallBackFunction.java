@@ -1,7 +1,15 @@
 package com.yjy.superbridge.jsbridge;
 
-public interface CallBackFunction {
-	
-	public void onCallBack(String data);
+import com.yjy.superbridge.internal.CallBackHandler;
 
+public abstract class CallBackFunction implements CallBackHandler<String> {
+    @Override
+    public void complete() {
+        complete(null);
+    }
+
+    @Override
+    public void setProgressData(String value) {
+        complete(value);
+    }
 }

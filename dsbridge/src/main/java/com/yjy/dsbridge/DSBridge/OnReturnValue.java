@@ -1,4 +1,4 @@
-package com.yjy.superjsbridgedemo.DSBridge;
+package com.yjy.dsbridge.DSBridge;
 
 /**
  * Created by du on 16/12/31.

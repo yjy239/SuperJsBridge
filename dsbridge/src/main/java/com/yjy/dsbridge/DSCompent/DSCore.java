@@ -1,11 +1,14 @@
-package com.yjy.superjsbridgedemo.DSCompent;
+package com.yjy.dsbridge.DSCompent;
 
 import com.yjy.superbridge.internal.BaseBridgeCore;
 import com.yjy.superbridge.internal.BridgeHelper;
+import com.yjy.superbridge.internal.CallBackHandler;
+import com.yjy.superbridge.internal.MethodMap;
+import com.yjy.superbridge.internal.ProxyHandler;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
-import com.yjy.superjsbridgedemo.DSBridge.DWebView;
-import com.yjy.superjsbridgedemo.DSBridge.OnReturnValue;
+import com.yjy.dsbridge.DSBridge.DWebView;
+import com.yjy.dsbridge.DSBridge.OnReturnValue;
 
 import java.util.ArrayList;
 
@@ -20,19 +23,19 @@ import java.util.ArrayList;
  */
 public class DSCore extends BaseBridgeCore {
     private DWebView mWebView;
-    ArrayList<String> mKeys = new ArrayList<>();
 
     public DSCore(DWebView webView){
         this.mWebView = webView;
+        mWebView.setCore(this);
+        mWebView.addInternalJavascriptObject();
     }
 
     @Override
-    public void registerHandler(String handlerName, BridgeHandler handler, boolean isInterceptor) {
+    public void registerHandler(final String handlerName, final BridgeHandler handler, final boolean isInterceptor) {
         if(mWebView == null){
             return;
         }
-
-
+        register(handlerName, new ProxyHandler(this,handlerName,handler));
 
     }
 
@@ -41,14 +44,13 @@ public class DSCore extends BaseBridgeCore {
         if(mWebView == null){
             return;
         }
-        mWebView.removeJavascriptObject(handlerName);
+        unregister(handlerName);
     }
 
     public void addJsObject(Object obj,String name){
         if(mWebView == null){
             return;
         }
-        mKeys.add(name);
         mWebView.addJavascriptObject(obj,name);
     }
 
@@ -62,15 +64,14 @@ public class DSCore extends BaseBridgeCore {
             return;
         }
 
-
         OnReturnValue retValue = new OnReturnValue<Object>() {
             @Override
             public void onValue(Object retValue) {
                 if(callBack != null){
                     if(retValue instanceof String){
-                        callBack.onCallBack((String)retValue);
+                        callBack.complete((String)retValue);
                     }else {
-                        callBack.onCallBack(retValue == null?null:retValue.toString());
+                        callBack.complete(retValue == null?null:retValue.toString());
                     }
                 }
             }
@@ -90,5 +91,6 @@ public class DSCore extends BaseBridgeCore {
 
     @Override
     public void release() {
+        mWebView = null;
     }
 }

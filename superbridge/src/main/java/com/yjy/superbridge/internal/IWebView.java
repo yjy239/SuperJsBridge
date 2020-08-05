@@ -15,4 +15,6 @@ public interface IWebView {
     void loadUrl(String url);
     void setWebViewClient(WebViewClient client);
     void addJavascriptInterface(Object object,String name);
+    void setClient(IBridgeClient client);
+
 }

@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:text="hasJavascriptMethod('asyn.XX')"
                 android:textAllCaps="false" />
-            <com.yjy.superjsbridgedemo.DSCompent.DSWebView
+            <com.yjy.dsbridge.DSCompent.DSWebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

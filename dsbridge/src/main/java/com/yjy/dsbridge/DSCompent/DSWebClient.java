@@ -1,11 +1,9 @@
-package com.yjy.superjsbridgedemo.DSCompent;
+package com.yjy.dsbridge.DSCompent;
 
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.yjy.superbridge.jsbridge.BridgeUtil;
-import com.yjy.superbridge.jsbridge.JsBridgeCore;
-import com.yjy.superbridge.jsbridge.Message;
+import com.yjy.superbridge.internal.IBridgeClient;
 
 /**
  * <pre>
@@ -16,13 +14,17 @@ import com.yjy.superbridge.jsbridge.Message;
  *     github:yjy239@gitub.com
  * </pre>
  */
-public class DSWebClient extends WebViewClient {
+public class DSWebClient extends WebViewClient implements IBridgeClient {
 
 
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-      //  BridgeUtil.webViewLoadLocalJs(view, "dsbridge.js");
 
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }

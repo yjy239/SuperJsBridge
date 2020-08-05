@@ -2,18 +2,15 @@ package com.yjy.superbridge.internal;
 
 import android.webkit.WebViewClient;
 
+import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.BridgeWebViewClient;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
+import com.yjy.superbridge.jsbridge.DefaultJsBridgeFactory;
 import com.yjy.superbridge.jsbridge.JsBridgeCore;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -98,8 +95,10 @@ public class Bridge {
     public static class Builder{
         private IWebView webView;
         Map<String,BridgeInterface> observableMap = new HashMap<>();
-        WebViewClient client;
+        IBridgeClient client;
         IBridgeCore core;
+        IBridgeFactory factory;
+        ConvertFactory convertFactory;
         ArrayList<BridgeInterceptor> mInterceptors = new ArrayList<>();
         public Builder(IWebView webView){
             this.webView = webView;
@@ -108,17 +107,19 @@ public class Bridge {
 
 
         public Builder registerInterface(String name,BridgeInterface object){
-
             observableMap.put(name,object);
             return this;
         }
 
-        public Builder setClientAndCore(IBridgeCore core,WebViewClient client){
-            this.client = client;
-            this.core = core;
+        public Builder setClientFactory(IBridgeFactory factory){
+            this.factory =factory;
             return this;
         }
 
+        public Builder setConvertFactory(ConvertFactory factory){
+            this.convertFactory =factory;
+            return this;
+        }
 
         public Builder addInterceptor(BridgeInterceptor interceptor){
             mInterceptors.add(interceptor);
@@ -127,34 +128,29 @@ public class Bridge {
 
 
         public Bridge build(){
-            if(core == null||client == null){
-                core = new JsBridgeCore(webView);
-                client = new BridgeWebViewClient((JsBridgeCore)core);
+            if(factory == null){
+                throw new IllegalArgumentException("must be set Factory");
             }
 
+            core = factory.getBridgeCore();
+            client = factory.getBridgeClient();
+
             core.setInterceptor(mInterceptors);
+
+            core.setConvertFactory(convertFactory);
 
             for(Map.Entry<String,BridgeInterface> entry : observableMap.entrySet()){
                 entry.getValue().setInterceptors(mInterceptors);
                 core.registerObj(entry.getKey(),entry.getValue());
             }
 
-
-
-            webView.setWebViewClient(client);
+            webView.setClient(client);
 
             return new Bridge(core);
-
         }
 
 
-
-
-
     }
 
 
-    public interface IBuilder{
-        void build(String name,Object obj,IBridgeCore core);
-    }
 }

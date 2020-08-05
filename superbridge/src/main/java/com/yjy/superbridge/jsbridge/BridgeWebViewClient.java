@@ -7,6 +7,8 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.yjy.superbridge.internal.IBridgeClient;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -14,7 +16,7 @@ import java.net.URLDecoder;
  * 如果要自定义WebViewClient必须要集成此类
  * Created by bruce on 10/28/15.
  */
-public class BridgeWebViewClient extends WebViewClient {
+public class BridgeWebViewClient extends WebViewClient implements IBridgeClient {
     private final String TAG = BridgeWebViewClient.class.getSimpleName();
     private JsBridgeCore mCore;
 
@@ -94,4 +96,8 @@ public class BridgeWebViewClient extends WebViewClient {
     }
 
 
+    @Override
+    public String getName() {
+        return null;
+    }
 }

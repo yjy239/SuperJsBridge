@@ -1,7 +1,5 @@
 package com.yjy.superbridge.internal;
 
-import com.yjy.superbridge.jsbridge.CallBackFunction;
-
 /**
  * <pre>
  *     @author : yjy
@@ -13,7 +11,7 @@ import com.yjy.superbridge.jsbridge.CallBackFunction;
  */
 public interface BridgeInterceptor<D,F> {
 
-    boolean receiverInterceptor(String handlerName, D data, F function);
+    boolean receiverInterceptor(String handlerName, D data);
 
-    boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack);
+    boolean sendInterceptor(String handlerName, Object data);
 }

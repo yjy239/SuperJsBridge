@@ -1,8 +1,10 @@
 package com.yjy.superbridge.internal;
 
+import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,8 @@ import java.util.List;
 public abstract class BaseBridgeCore implements IBridgeCore{
 
     private List<BridgeInterceptor> mInterceptors = new ArrayList<>();
+    private MethodMap methodMap = new MethodMap();
+
 
     @Override
     public void addInterceptor(BridgeInterceptor interceptor) {
@@ -40,13 +44,43 @@ public abstract class BaseBridgeCore implements IBridgeCore{
     }
 
     @Override
-    public void registerHandler(String handlerName, BridgeHandler handler) {
-        registerHandler(handlerName, handler,false);
+    public void register(String namespace, String name, Method method, Object obj) {
+        methodMap.put(namespace,method,obj);
     }
 
 
     @Override
+    public void registerHandler(String handlerName, BridgeHandler handler) {
+        registerHandler(handlerName, handler,false);
+    }
+
+    @Override
+    public void register(String name, BridgeHandler method) {
+        methodMap.put(name,method);
+    }
+
+    @Override
+    public void unregister(String name) {
+        methodMap.remove(name);
+    }
+
+    @Override
+    public void unregister(String namespace, String name) {
+        methodMap.remove(namespace,name);
+    }
+
+    @Override
     public void callHandler(String handlerName, String data, CallBackFunction callBack) {
         callHandler(handlerName, data, callBack,false);
+    }
+
+    @Override
+    public MethodMap getMethodMap() {
+        return methodMap;
+    }
+
+    @Override
+    public void setConvertFactory(ConvertFactory factory) {
+        methodMap.setConvertFactory(factory);
     }
 }

@@ -22,6 +22,7 @@
         <activity android:name=".CallJavascriptActivity" />
         <activity android:name=".JavascriptCallNativeActivity" />
         <activity android:name=".JsBridgeActivity"></activity>
+
     </application>
 
 </manifest>

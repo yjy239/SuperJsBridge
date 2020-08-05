@@ -1,9 +1,10 @@
 package com.yjy.superbridge.internal;
 
+import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
-import java.util.ArrayList;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -33,6 +34,15 @@ public interface IBridgeCore {
 
     void registerObj(String name,Object obj);
 
+    void register(String namespace, String name, Method method, Object obj);
+
+    void register(String name, BridgeHandler method);
+
+    void unregister(String name);
+    void unregister(String namespace,String name);
+
+    void setConvertFactory(ConvertFactory factory);
+    MethodMap getMethodMap();
 
     void release();
 

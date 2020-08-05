@@ -9,9 +9,11 @@ import android.widget.Toast;
 
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.BridgeInterceptor;
+import com.yjy.superbridge.internal.CallBackHandler;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.BridgeWebView;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
+import com.yjy.superbridge.jsbridge.DefaultJsBridgeFactory;
 
 /**
  * <pre>
@@ -30,31 +32,32 @@ public class JsBridgeActivity extends AppCompatActivity {
         final BridgeWebView view = findViewById(R.id.webView);
 //
         final Bridge bridge =  new Bridge.Builder(view)
-                .registerInterface("JsTest",new JsTest())
+                .setClientFactory(new DefaultJsBridgeFactory(view))
+                .registerInterface(null,new JsTest())
                 .addInterceptor(new BridgeInterceptor<String,CallBackFunction>() {
                     @Override
-                    public boolean receiverInterceptor(String handlerName, String data, CallBackFunction function) {
+                    public boolean receiverInterceptor(String handlerName, String data) {
                         Log.e("calljs1","--------------"+data);
-                        return true;
+                        return false;
                     }
 
                     @Override
-                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                    public boolean sendInterceptor(String handlerName, Object data) {
                         Log.e("callNative1",handlerName+"--------------"+data);
                         return false;
                     }
                 })
                 .addInterceptor(new BridgeInterceptor() {
                     @Override
-                    public boolean receiverInterceptor(String handlerName, Object data, Object function) {
+                    public boolean receiverInterceptor(String handlerName, Object data) {
                         Log.e("calljs2","--------------"+data);
                         return false;
                     }
 
                     @Override
-                    public boolean sendInterceptor(String handlerName, String data, CallBackFunction callBack) {
+                    public boolean sendInterceptor(String handlerName, Object data) {
                         Log.e("callNative2","--------------"+data);
-                        return true;
+                        return false;
                     }
                 })
                 .build();
@@ -64,19 +67,19 @@ public class JsBridgeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 bridge.callHandler("functionInJs","test test",new CallBackFunction(){
                     @Override
-                    public void onCallBack(String data) {
+                    public void complete(String data) {
                         Toast.makeText(JsBridgeActivity.this,data,Toast.LENGTH_SHORT).show();
                     }
                 },false);
             }
         });
 
-        bridge.registerHandler("submitFromWeb", new BridgeHandler() {
-            @Override
-            public void handler(String data, CallBackFunction function) {
-                function.onCallBack("response: data");
-            }
-        },true);
+//        bridge.registerHandler("submitFromWeb", new BridgeHandler() {
+//            @Override
+//            public void handler(String data, CallBackHandler<String> function) {
+//                function.complete("response: data");
+//            }
+//        },true);
 
 
 
