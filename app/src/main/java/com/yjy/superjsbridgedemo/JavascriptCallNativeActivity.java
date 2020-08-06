@@ -4,11 +4,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.yjy.converter.GsonConvertFactory;
+import com.yjy.dsbridge.DSCompent.DSReceiveFromPlatformCallback;
 import com.yjy.dsbridge.DSCompent.DefaultDsBridgeFactory;
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.BridgeInterceptor;
 import com.yjy.dsbridge.DSBridge.CompletionHandler;
 import com.yjy.dsbridge.DSCompent.DSWebView;
+import com.yjy.superbridge.internal.model.ResponseData;
 
 
 public class JavascriptCallNativeActivity extends AppCompatActivity {
@@ -21,7 +25,15 @@ public class JavascriptCallNativeActivity extends AppCompatActivity {
         // set debug mode
         DSWebView.setWebContentsDebuggingEnabled(true);
         Bridge bridge =  new Bridge.Builder(dwebView)
-                .setClientFactory(new DefaultDsBridgeFactory(dwebView))
+                .setClientFactory(new DefaultDsBridgeFactory(dwebView)
+                .setReceiveFromPlatformCallback(new DSReceiveFromPlatformCallback() {
+                    @Override
+                    public ResponseData<String> onFound(ResponseData<String> data) {
+                        Log.e("ResponseData",data.getData());
+                        return data;
+                    }
+                }))
+                .setConvertFactory(GsonConvertFactory.create(new Gson()))
                 .registerInterface("JsTest",new JsTest())
                 .registerInterface(null,new JsApi())
                 .registerInterface("echo",new JsEchoApi())

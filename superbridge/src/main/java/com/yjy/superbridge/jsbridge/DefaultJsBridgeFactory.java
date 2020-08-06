@@ -14,10 +14,11 @@ import com.yjy.superbridge.internal.IBridgeFactory;
  *     version: 1.0
  * </pre>
  */
-public class DefaultJsBridgeFactory implements IBridgeFactory {
+public class DefaultJsBridgeFactory implements IBridgeFactory<JSReceiveFromPlatformCallback> {
 
     private IWebView webView;
     private JsBridgeCore mCore;
+    private JSReceiveFromPlatformCallback callback;
     public DefaultJsBridgeFactory(IWebView webView){
         this.webView = webView;
     }
@@ -34,4 +35,17 @@ public class DefaultJsBridgeFactory implements IBridgeFactory {
     public IBridgeClient getBridgeClient() {
         return new BridgeWebViewClient((JsBridgeCore)getBridgeCore());
     }
+
+    @Override
+    public IBridgeFactory setReceiveFromPlatformCallback(JSReceiveFromPlatformCallback callback) {
+        this.callback = callback;
+        return this;
+    }
+
+    @Override
+    public JSReceiveFromPlatformCallback getReceiveFromPlatformCallback() {
+        return callback;
+    }
+
+
 }

@@ -5,6 +5,7 @@ import com.yjy.superbridge.internal.BridgeHelper;
 import com.yjy.superbridge.internal.CallBackHandler;
 import com.yjy.superbridge.internal.MethodMap;
 import com.yjy.superbridge.internal.ProxyHandler;
+import com.yjy.superbridge.internal.ReceiveFromPlatformCallback;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.dsbridge.DSBridge.DWebView;
@@ -92,5 +93,13 @@ public class DSCore extends BaseBridgeCore {
     @Override
     public void release() {
         mWebView = null;
+    }
+
+    @Override
+    public DSReceiveFromPlatformCallback getReceiveCallback() {
+        if(!(mReceiveFromPlatformCallback instanceof DSReceiveFromPlatformCallback)){
+            return null;
+        }
+        return (DSReceiveFromPlatformCallback)mReceiveFromPlatformCallback;
     }
 }

@@ -1,5 +1,7 @@
 package com.yjy.superbridge.internal;
 
+import com.yjy.superbridge.internal.model.ResponseData;
+
 /**
  * <pre>
  *     @author : yjy

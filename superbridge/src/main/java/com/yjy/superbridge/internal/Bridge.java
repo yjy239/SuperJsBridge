@@ -1,13 +1,8 @@
 package com.yjy.superbridge.internal;
 
-import android.webkit.WebViewClient;
-
 import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
-import com.yjy.superbridge.jsbridge.BridgeWebViewClient;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
-import com.yjy.superbridge.jsbridge.DefaultJsBridgeFactory;
-import com.yjy.superbridge.jsbridge.JsBridgeCore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,8 +134,9 @@ public class Bridge {
 
             core.setConvertFactory(convertFactory);
 
+            core.setReceiveCallback(factory.getReceiveFromPlatformCallback());
+
             for(Map.Entry<String,BridgeInterface> entry : observableMap.entrySet()){
-                entry.getValue().setInterceptors(mInterceptors);
                 core.registerObj(entry.getKey(),entry.getValue());
             }
 

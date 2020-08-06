@@ -49,7 +49,7 @@
     }
 
     function callAsyn() {
-        dsBridge.call("testAsyn","testAsyn", function (v) {
+        dsBridge.call("testAsyn","{'msg':'test','object':{'name':'yjy','age':18}}", function (v) {
             alert(v)
         })
     }

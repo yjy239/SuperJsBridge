@@ -3,6 +3,7 @@ package com.yjy.superbridge.internal;
 import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
+import com.yjy.superbridge.jsbridge.JSReceiveFromPlatformCallback;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -83,4 +84,12 @@ public abstract class BaseBridgeCore implements IBridgeCore{
     public void setConvertFactory(ConvertFactory factory) {
         methodMap.setConvertFactory(factory);
     }
+
+    protected ReceiveFromPlatformCallback mReceiveFromPlatformCallback;
+
+    @Override
+    public void setReceiveCallback(ReceiveFromPlatformCallback callback) {
+        mReceiveFromPlatformCallback = callback;
+    }
+
 }

@@ -8,6 +8,8 @@ import com.yjy.superbridge.internal.BaseBridgeCore;
 import com.yjy.superbridge.internal.BridgeHelper;
 import com.yjy.superbridge.internal.IWebView;
 import com.yjy.superbridge.internal.ProxyHandler;
+import com.yjy.superbridge.internal.ReceiveFromPlatformCallback;
+import com.yjy.superbridge.internal.model.ResponseData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -249,6 +251,12 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
 
                     for (int i = 0; i < list.size(); i++) {
                         Message m = list.get(i);
+                        if(getReceiveCallback()!=null){
+                            ResponseData<Message> responseData = new ResponseData<>(m!=null?
+                                    m.getHandlerName():"",m);
+                            responseData = getReceiveCallback().onFound(responseData);
+                            m = responseData.getData();
+                        }
                         String responseId = m.getResponseId();
                         // 是否是response  CallBackFunction
                         if (!TextUtils.isEmpty(responseId)) {
@@ -296,6 +304,17 @@ public class JsBridgeCore extends BaseBridgeCore implements WebViewJavascriptBri
 
             });
         }
+    }
+
+
+
+    @Override
+    public JSReceiveFromPlatformCallback getReceiveCallback() {
+        if(!(mReceiveFromPlatformCallback
+                instanceof  JSReceiveFromPlatformCallback)){
+            return null;
+        }
+        return (JSReceiveFromPlatformCallback)mReceiveFromPlatformCallback;
     }
 
 }

@@ -3,6 +3,7 @@ package com.yjy.dsbridge.DSCompent;
 import com.yjy.superbridge.internal.IBridgeClient;
 import com.yjy.superbridge.internal.IBridgeCore;
 import com.yjy.superbridge.internal.IBridgeFactory;
+import com.yjy.superbridge.internal.ReceiveFromPlatformCallback;
 
 /**
  * <pre>
@@ -13,9 +14,10 @@ import com.yjy.superbridge.internal.IBridgeFactory;
  *     version: 1.0
  * </pre>
  */
-public class DefaultDsBridgeFactory implements IBridgeFactory {
+public class DefaultDsBridgeFactory implements IBridgeFactory<DSReceiveFromPlatformCallback> {
     private DSWebView mDsWebView;
     private DSCore mCore;
+    private DSReceiveFromPlatformCallback callback;
     public DefaultDsBridgeFactory(DSWebView webview){
         this.mDsWebView = webview;
     }
@@ -30,5 +32,16 @@ public class DefaultDsBridgeFactory implements IBridgeFactory {
     @Override
     public IBridgeClient getBridgeClient() {
         return new DSWebClient();
+    }
+
+    @Override
+    public IBridgeFactory setReceiveFromPlatformCallback(DSReceiveFromPlatformCallback callback) {
+        this.callback = callback;
+        return this;
+    }
+
+    @Override
+    public DSReceiveFromPlatformCallback getReceiveFromPlatformCallback() {
+        return callback;
     }
 }

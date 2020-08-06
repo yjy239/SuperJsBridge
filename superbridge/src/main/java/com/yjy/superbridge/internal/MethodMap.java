@@ -30,21 +30,20 @@ import java.util.Map;
  * </pre>
  */
 public class MethodMap {
-    Map<Object,Map<String,Method>> methodMap = new HashMap<>();
+    Map<Object,Map<String,Invoker>> methodMap = new HashMap<>();
     private Map<String, Object> mNamespaceInterfaces = new HashMap<String, Object>();
     Map<String, BridgeHandler> handlerMap = new HashMap<>();
     private ConvertFactory mConvertFactory;
 
 
-
     public void put(String namespace,Method method,Object obj){
-        Map<String,Method> map = methodMap.get(obj);
+        Map<String,Invoker> map = methodMap.get(obj);
         if(map==null){
             map = new HashMap<>();
         }
 
         //这么做是为了校验必须存在BridgeMethod注解
-        map.put(method.getName(),method);
+        map.put(method.getName(),new Invoker(method));
 
         methodMap.put(obj, map);
         mNamespaceInterfaces.put(namespace !=null?namespace:"",obj);
@@ -65,8 +64,8 @@ public class MethodMap {
         }
 
 
-        Map<String,Method> map = methodMap.get(object);
-        return map.get(methodName) != null;
+        Map<String,Invoker> map = methodMap.get(object);
+        return map!=null&&map.get(methodName) != null;
 
     }
 
@@ -84,7 +83,7 @@ public class MethodMap {
         if(obj == null){
             return;
         }
-        Map<String,Method> map = methodMap.get(obj);
+        Map<String,Invoker> map = methodMap.get(obj);
         if(map==null){
             return;
         }
@@ -112,21 +111,16 @@ public class MethodMap {
         if(obj == null){
             return false;
         }
-        Map<String,Method> map = methodMap.get(obj);
+        Map<String,Invoker> map = methodMap.get(obj);
         if(map == null){
             return false;
         }
 
-        Method method = map.get(name);
+        Invoker method = map.get(name);
         if(method ==null){
             return false;
         }
-        Class<?>[] types = method.getParameterTypes();
-        if(types == null||types.length == 0){
-            return false;
-        }
-        return types[types.length-1] == CallBackHandler.class
-                ||CallBackHandler.class.isAssignableFrom(types[types.length-1]);
+        return method.isAsync();
     }
 
     public boolean isInterceptor(String name){
@@ -140,13 +134,10 @@ public class MethodMap {
         if(obj == null){
             return false;
         }
-        Map<String,Method> map = methodMap.get(obj);
-        Method method = map.get(name);
-        BridgeMethod annotation = method.getAnnotation(BridgeMethod.class);
-        if(annotation == null){
-            return false;
-        }
-        return annotation.interceptor();
+        Map<String,Invoker> map = methodMap.get(obj);
+        Invoker method = map.get(name);
+
+        return method.isInterceptor();
     }
 
 
@@ -160,11 +151,11 @@ public class MethodMap {
         }
 
 
-        Map<String,Method> map = methodMap.get(object);
+        Map<String,Invoker> map = methodMap.get(object);
        if(map != null){
-           Method invoker = map.get(method);
+           Invoker invoker = map.get(method);
            if(invoker != null){
-               return invokeWithField(object,invoker,args,handler);
+               return invoker.invokeWithField(object,args,handler,mConvertFactory);
            }
 
        }else {
@@ -181,142 +172,31 @@ public class MethodMap {
     }
 
 
-    //直接注入
-    public Object invokeWithField(Object obj,Method method,String data,CallBackHandler handler){
-        try {
-            if(data == null){
-                return invoke(obj,method,data,handler);
-            }
 
-            Annotation[][] annotations = method.getParameterAnnotations();
-            Class<?>[] types = method.getParameterTypes();
-
-            ArrayList<String> methodParameterNames = new ArrayList<String>(types.length);
-            for (int i = 0; i < annotations.length; i++) {
-                for (int j = 0; j < annotations[i].length; j++) {
-                    if (annotations[i][j].annotationType() != BridgeField.class) {
-                        continue;
-                    }
-
-                    BridgeField field = (BridgeField) annotations[i][j];
-                    String name = field.name();
-                    methodParameterNames.add(name);
-                }
-            }
-
-
-
-            boolean isAsync = types[types.length-1] == CallBackHandler.class
-                    ||CallBackHandler.class.isAssignableFrom(types[types.length-1]);
-
-            if(methodParameterNames.size() == 0){
-                try {
-                    if(isAsync){
-                        invoke(obj,method,data,handler);
-                        return null;
-                    }else {
-                        return invoke(obj,method,data);
-                    }
-
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-            //根据类型转换数据到数组
-            Object[] params = new Object[types.length];
-
-
-            try {
-                JSONObject object = new JSONObject(data);
-
-                for (int i = 0; i < methodParameterNames.size(); i++) {
-                    transform(params, i, object.getString(methodParameterNames.get(i)), types[i]);
-                }
-                if(isAsync){
-                    params[types.length - 1] = handler;
-                }
-
-
-                return invoke(obj,method,params);
-            }catch (JSONException je){
-                je.printStackTrace();
-                return invoke(obj,method,params);
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
-
-    }
-
-    private void transform(Object[] params, int index, String value, Type type) {
-        if (type == int.class) {
-            params[index] = StrUtil.toInt(value);
-        } else if (type == boolean.class) {
-            params[index] = StrUtil.toBool(value);
-        } else if (type == double.class) {
-            params[index] = StrUtil.toDouble(value);
-        } else if (type == float.class) {
-            params[index] = Float.parseFloat(value);
-        } else if (type == short.class) {
-            params[index] = Short.parseShort(value);
-        } else if (type == byte.class) {
-            params[index] = Byte.parseByte(value);
-        } else if (type == long.class) {
-            params[index] = Long.parseLong(value);
-        } else if (type == String.class) {
-            params[index] = value;
-        }else if (type == Uri.class) {
-            params[index] = Uri.parse(value);
-        } else {
-            if(mConvertFactory != null){
-                Converter converter = mConvertFactory.createConverter(type);
-                if(converter != null){
-                    try {
-                        params[index] = converter.convert(value);
-                    }catch (Exception e){
-                        params[index] = null;
-                    }
-                }else {
-                    params[index] = null;
-                }
-
-            }else {
-                params[index] = null;
-            }
-
-        }
-    }
-
-    public Object invoke(Object obj,Method method,Object... args){
-        try {
-            method.setAccessible(true);
-            return method.invoke(obj,args);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     public void setConvertFactory(ConvertFactory factory) {
         mConvertFactory = factory;
     }
 
-    public static class Invoker{
-        Method method;
-        boolean isAsync;
+    static class Invoker{
+        private Method method = null;
+        private int isAsync = ASYNC_UNDEFINED;
+        private int isInterceptor= INTERCEPTOR_UNDEFINED;
 
-        public Invoker(Method method, boolean isAsync) {
+        static final int ASYNC_UNDEFINED = 0;
+        static final int ASYNC =1;
+        static final int SYNC = 2;
+
+        static final int INTERCEPTOR_UNDEFINED = 0;
+        static final int INTERCEPTOR =1;
+        static final int DISPATCH = 2;
+
+
+        Invoker(Method method) {
             this.method = method;
-            this.isAsync = isAsync;
         }
 
-        public Object invoke(Object obj,Method method,Object... args){
+        Object invoke(Object obj,Object... args){
             try {
                 method.setAccessible(true);
                 return method.invoke(obj,args);
@@ -327,8 +207,148 @@ public class MethodMap {
             return null;
         }
 
-        public boolean isAsync() {
-            return isAsync;
+        boolean isAsync() {
+            if(isAsync == ASYNC_UNDEFINED){
+                boolean async = false;
+                Class<?>[] types = method.getParameterTypes();
+                if(types == null||types.length == 0){
+                    isAsync = SYNC;
+                }else{
+                    async =  types[types.length-1] == CallBackHandler.class
+                            ||CallBackHandler.class.isAssignableFrom(types[types.length-1]);
+
+                    isAsync = async?ASYNC:SYNC;
+                }
+
+            }
+            return isAsync == ASYNC;
+        }
+
+        boolean isInterceptor(){
+            if(isInterceptor == INTERCEPTOR_UNDEFINED){
+                BridgeMethod annotation = method.getAnnotation(BridgeMethod.class);
+                if(annotation == null){
+                    return false;
+                }
+                boolean interceptor =  annotation.interceptor();
+                isInterceptor = interceptor?INTERCEPTOR:DISPATCH;
+            }
+
+            return isInterceptor == INTERCEPTOR;
+        }
+
+
+        //直接注入
+        Object invokeWithField(Object obj,String data,CallBackHandler handler,ConvertFactory factory){
+            try {
+                if(data == null){
+                    invoke(obj,data,handler);
+                    return null;
+                }
+
+                Annotation[][] annotations = method.getParameterAnnotations();
+                Class<?>[] types = method.getParameterTypes();
+
+                ArrayList<String> methodParameterNames = new ArrayList<String>(types.length);
+                for (int i = 0; i < annotations.length; i++) {
+                    for (int j = 0; j < annotations[i].length; j++) {
+                        if (annotations[i][j].annotationType() != BridgeField.class) {
+                            continue;
+                        }
+
+                        BridgeField field = (BridgeField) annotations[i][j];
+                        String name = field.name();
+                        methodParameterNames.add(name);
+                    }
+                }
+
+
+
+                boolean isAsync = types[types.length-1] == CallBackHandler.class
+                        ||CallBackHandler.class.isAssignableFrom(types[types.length-1]);
+
+                if(methodParameterNames.size() == 0){
+                    try {
+                        if(isAsync){
+                            invoke(obj,data,handler);
+                            return null;
+                        }else {
+                            return invoke(obj,data);
+                        }
+
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+
+                //根据类型转换数据到数组
+                Object[] params = new Object[types.length];
+
+
+                try {
+                    JSONObject object = new JSONObject(data);
+
+                    for (int i = 0; i < methodParameterNames.size(); i++) {
+                        transform(params, i, object.getString(methodParameterNames.get(i)), types[i],factory);
+                    }
+                    if(isAsync){
+                        params[types.length - 1] = handler;
+                    }
+
+
+                    return invoke(obj,params);
+                }catch (JSONException je){
+                    je.printStackTrace();
+                    return invoke(obj,params);
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            return null;
+
+        }
+
+        private void transform(Object[] params, int index, String value, Type type,ConvertFactory factory) {
+            if (type == int.class) {
+                params[index] = StrUtil.toInt(value);
+            } else if (type == boolean.class) {
+                params[index] = StrUtil.toBool(value);
+            } else if (type == double.class) {
+                params[index] = StrUtil.toDouble(value);
+            } else if (type == float.class) {
+                params[index] = Float.parseFloat(value);
+            } else if (type == short.class) {
+                params[index] = Short.parseShort(value);
+            } else if (type == byte.class) {
+                params[index] = Byte.parseByte(value);
+            } else if (type == long.class) {
+                params[index] = Long.parseLong(value);
+            } else if (type == String.class) {
+                params[index] = value;
+            }else if (type == Uri.class) {
+                params[index] = Uri.parse(value);
+            } else {
+                if(factory != null){
+                    Converter converter = factory.createConverter(type);
+                    if(converter != null){
+                        try {
+                            params[index] = converter.convert(value);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            params[index] = null;
+                        }
+                    }else {
+                        params[index] = null;
+                    }
+
+                }else {
+                    params[index] = null;
+                }
+
+            }
         }
     }
 }

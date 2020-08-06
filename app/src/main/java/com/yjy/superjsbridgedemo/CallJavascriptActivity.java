@@ -6,9 +6,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.yjy.converter.GsonConvertFactory;
+import com.yjy.dsbridge.DSCompent.DSReceiveFromPlatformCallback;
 import com.yjy.dsbridge.DSCompent.DefaultDsBridgeFactory;
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.BridgeInterceptor;
+import com.yjy.superbridge.internal.model.ResponseData;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.dsbridge.DSCompent.DSWebView;
 import com.yjy.dsbridge.DSBridge.DWebView;
@@ -46,7 +50,15 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
 
         //请注意DsBridge 为了接口统一，只暴露了统一的接口，单参数进入和回调接口
         bridge =  new Bridge.Builder(dWebView)
-                .setClientFactory(new DefaultDsBridgeFactory(dWebView))
+                .setClientFactory(new DefaultDsBridgeFactory(dWebView)
+                        .setReceiveFromPlatformCallback(new DSReceiveFromPlatformCallback() {
+                    @Override
+                    public ResponseData<String> onFound(ResponseData<String> data) {
+                        Log.e("ResponseData",data.getData());
+                        return data;
+                    }
+                }))
+                .setConvertFactory(GsonConvertFactory.create(new Gson()))
                 .addInterceptor(new BridgeInterceptor() {
                     @Override
                     public boolean receiverInterceptor(String handlerName, Object data) {

@@ -39,11 +39,16 @@ public interface IBridgeCore {
     void register(String name, BridgeHandler method);
 
     void unregister(String name);
+
     void unregister(String namespace,String name);
 
     void setConvertFactory(ConvertFactory factory);
+
     MethodMap getMethodMap();
 
     void release();
 
+    <T extends ReceiveFromPlatformCallback> T getReceiveCallback();
+
+    <T extends ReceiveFromPlatformCallback> void setReceiveCallback(T callback);
 }

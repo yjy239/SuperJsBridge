@@ -35,11 +35,13 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.yjy.dsbridge.DSCompent.DSCore;
+import com.yjy.dsbridge.DSCompent.DSReceiveFromPlatformCallback;
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.BridgeHelper;
 import com.yjy.superbridge.internal.BridgeMethod;
 import com.yjy.superbridge.internal.CallBackHandler;
 import com.yjy.superbridge.internal.IBridgeCore;
+import com.yjy.superbridge.internal.model.ResponseData;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
 import org.json.JSONArray;
@@ -107,7 +109,6 @@ public class DWebView extends WebView {
                 return ret.toString();
             }
             Object arg=null;
-            Method method = null;
             String callback = null;
 
             try {
@@ -123,6 +124,15 @@ public class DWebView extends WebView {
                 PrintDebugInfo(error);
                 e.printStackTrace();
                 return ret.toString();
+            }
+
+            if(mCore!=null&&mCore.getReceiveCallback()!=null){
+                DSReceiveFromPlatformCallback receiveFromPlatformCallback =
+                        mCore.getReceiveCallback();
+                ResponseData<String> data = new ResponseData<String>(methodName,arg!=null?
+                        arg.toString():null);
+                data = receiveFromPlatformCallback.onFound(data);
+                arg = data.getData();
             }
 
 
@@ -339,9 +349,10 @@ public class DWebView extends WebView {
                 runOnMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        JSONObject jsonObject = (JSONObject) obj;
-                        Object data = null;
                         try {
+                            JSONObject jsonObject = new JSONObject((String)obj) ;
+                            Object data = null;
+
                             int id = jsonObject.getInt("id");
                             boolean isCompleted = jsonObject.getBoolean("complete");
                             OnReturnValue handler = handlerMap.get(id);

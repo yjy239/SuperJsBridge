@@ -5,8 +5,11 @@ import android.util.Log;
 import com.yjy.superbridge.internal.BridgeField;
 import com.yjy.superbridge.internal.BridgeInterface;
 import com.yjy.superbridge.internal.BridgeMethod;
-import com.yjy.superbridge.internal.ReceiverBridge;
+import com.yjy.superbridge.internal.CallBackHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
+import com.yjy.superjsbridgedemo.model.User;
+
+import javax.security.auth.callback.CallbackHandler;
 
 /**
  * <pre>
@@ -27,6 +30,11 @@ public class JsTest extends BridgeInterface {
     @BridgeMethod(interceptor = true)
     public void submitFromWeb(@BridgeField(name = "param") String data, CallBackFunction function){
         function.complete("submitFromWeb response: "+data);
+    }
+
+    @BridgeMethod(interceptor = true)
+    public void submitUserFromWeb(@BridgeField(name = "user") User data, CallBackFunction function){
+        function.complete("submitFromWeb response: "+data.getUsername());
     }
 
 

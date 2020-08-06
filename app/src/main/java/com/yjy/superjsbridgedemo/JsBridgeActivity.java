@@ -7,13 +7,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.yjy.converter.GsonConvertFactory;
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.BridgeInterceptor;
 import com.yjy.superbridge.internal.CallBackHandler;
+import com.yjy.superbridge.internal.model.ResponseData;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.BridgeWebView;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superbridge.jsbridge.DefaultJsBridgeFactory;
+import com.yjy.superbridge.jsbridge.JSReceiveFromPlatformCallback;
+import com.yjy.superbridge.jsbridge.Message;
 
 /**
  * <pre>
@@ -32,7 +37,15 @@ public class JsBridgeActivity extends AppCompatActivity {
         final BridgeWebView view = findViewById(R.id.webView);
 //
         final Bridge bridge =  new Bridge.Builder(view)
-                .setClientFactory(new DefaultJsBridgeFactory(view))
+                .setClientFactory(new DefaultJsBridgeFactory(view)
+                .setReceiveFromPlatformCallback(new JSReceiveFromPlatformCallback() {
+                    @Override
+                    public ResponseData<Message> onFound(ResponseData<Message> data) {
+                        Log.e("onFound",data.getData().toJson());
+                        return data;
+                    }
+                }))
+                .setConvertFactory(GsonConvertFactory.create(new Gson()))
                 .registerInterface(null,new JsTest())
                 .addInterceptor(new BridgeInterceptor<String,CallBackFunction>() {
                     @Override

@@ -2,13 +2,13 @@ package com.yjy.superjsbridgedemo;
 
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.webkit.JavascriptInterface;
 
-import com.yjy.dsbridge.DSBridge.CompletionHandler;
+import com.yjy.superbridge.internal.BridgeField;
 import com.yjy.superbridge.internal.BridgeInterface;
 import com.yjy.superbridge.internal.BridgeMethod;
 import com.yjy.superbridge.internal.CallBackHandler;
-import com.yjy.superbridge.internal.ReceiverBridge;
+import com.yjy.superjsbridgedemo.model.TestObj;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,9 +25,16 @@ public class JsApi extends BridgeInterface {
         return msg + "［syn call］";
     }
 
+//    @BridgeMethod
+//    public void testAsyn(Object msg, CallBackHandler<String> handler){
+//        Log.e("Type",msg.getClass().toString());
+//        handler.complete(msg+" [ asyn call]");
+//    }
+
     @BridgeMethod
-    public void testAsyn(Object msg, CallBackHandler<String> handler){
-        Log.e("Type",msg.getClass().toString());
+    public void testAsyn(@BridgeField(name = "msg") String msg,
+                         @BridgeField(name = "object") TestObj obj, CallBackHandler<String> handler){
+        Log.e("object",obj.name);
         handler.complete(msg+" [ asyn call]");
     }
 

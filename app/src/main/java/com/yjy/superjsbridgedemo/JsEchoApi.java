@@ -1,14 +1,11 @@
 package com.yjy.superjsbridgedemo;
 
 import android.util.Log;
-import android.webkit.JavascriptInterface;
 
 import com.yjy.superbridge.internal.BridgeField;
 import com.yjy.superbridge.internal.BridgeInterface;
 import com.yjy.superbridge.internal.BridgeMethod;
 import com.yjy.superbridge.internal.CallBackHandler;
-import com.yjy.superbridge.internal.ReceiverBridge;
-import com.yjy.dsbridge.DSBridge.CompletionHandler;
 
 import org.json.JSONException;
 
