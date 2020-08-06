@@ -2,6 +2,7 @@ package com.yjy.superbridge.internal;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.yjy.superbridge.internal.convert.ConvertFactory;
@@ -25,7 +26,7 @@ import java.util.Map;
  *     author : yjy
  *     e-mail : yujunyu12@gmail.com
  *     time   : 2020/08/04
- *     desc   :
+ *     desc   : 所有Bridge的方法表
  *     version: 1.0
  * </pre>
  */
@@ -312,24 +313,24 @@ public class MethodMap {
         }
 
         private void transform(Object[] params, int index, String value, Type type,ConvertFactory factory) {
-            if (type == int.class) {
+            if (type == int.class||type == Integer.class) {
                 params[index] = StrUtil.toInt(value);
-            } else if (type == boolean.class) {
+            } else if (type == boolean.class||type == Boolean.class) {
                 params[index] = StrUtil.toBool(value);
-            } else if (type == double.class) {
+            } else if (type == double.class||type == Double.class) {
                 params[index] = StrUtil.toDouble(value);
-            } else if (type == float.class) {
-                params[index] = Float.parseFloat(value);
-            } else if (type == short.class) {
-                params[index] = Short.parseShort(value);
-            } else if (type == byte.class) {
-                params[index] = Byte.parseByte(value);
-            } else if (type == long.class) {
-                params[index] = Long.parseLong(value);
-            } else if (type == String.class) {
+            } else if (type == float.class||type == Float.class) {
+                params[index] = StrUtil.toFloat(value);
+            } else if (type == short.class||type == Short.class) {
+                params[index] = StrUtil.toShort(value);
+            } else if (type == byte.class||type == Byte.class) {
+                params[index] = StrUtil.toByte(value);
+            } else if (type == long.class||type == Long.class) {
+                params[index] = StrUtil.toLong(value);
+            }else if (type == String.class) {
                 params[index] = value;
             }else if (type == Uri.class) {
-                params[index] = Uri.parse(value);
+                params[index] = TextUtils.isEmpty(value)?null:Uri.parse(value);
             } else {
                 if(factory != null){
                     Converter converter = factory.createConverter(type);

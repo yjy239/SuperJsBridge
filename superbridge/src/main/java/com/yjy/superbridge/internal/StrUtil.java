@@ -84,4 +84,32 @@ class StrUtil {
         return false;
     }
 
+    public static float toFloat(String obj) {
+        try {
+            return Float.parseFloat(obj);
+        } catch (Exception e) {
+        }
+        return 0F;
+    }
+
+
+    public static float toShort(String obj) {
+        try {
+            return Short.parseShort(obj);
+        } catch (Exception e) {
+        }
+        return 0F;
+    }
+
+
+    public static byte toByte(String obj) {
+        try {
+            return Byte.parseByte(obj);
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+
+
+
 }
