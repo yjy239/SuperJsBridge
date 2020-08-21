@@ -2,6 +2,9 @@ package com.yjy.superjsbridgedemo;
 
 import android.util.Log;
 
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReadableMap;
+import com.yjy.rnbridge.RnBridge.PromiseCallback;
 import com.yjy.superbridge.internal.BridgeField;
 import com.yjy.superbridge.internal.BridgeInterface;
 import com.yjy.superbridge.internal.BridgeMethod;
@@ -22,19 +25,31 @@ import javax.security.auth.callback.CallbackHandler;
  */
 public class JsTest extends BridgeInterface {
 
+//    @BridgeMethod(interceptor = true)
+//    public void test1(String s){
+//        Log.e("JSTest",s) ;
+//    }
+//
+//    @BridgeMethod(interceptor = true)
+//    public void submitFromWeb(@BridgeField(name = "param") String data, CallBackFunction function){
+//        function.complete("submitFromWeb response: "+data);
+//    }
+//
+//    @BridgeMethod(interceptor = true)
+//    public void submitUserFromWeb(@BridgeField(name = "user") User data, CallBackFunction function){
+//        function.complete("submitFromWeb response: "+data.getUsername());
+//    }
+
     @BridgeMethod(interceptor = true)
-    public void test1(String s){
+    public void read(String s){
         Log.e("JSTest",s) ;
     }
 
-    @BridgeMethod(interceptor = true)
-    public void submitFromWeb(@BridgeField(name = "param") String data, CallBackFunction function){
-        function.complete("submitFromWeb response: "+data);
-    }
 
     @BridgeMethod(interceptor = true)
-    public void submitUserFromWeb(@BridgeField(name = "user") User data, CallBackFunction function){
-        function.complete("submitFromWeb response: "+data.getUsername());
+    public void callback(ReadableMap map, PromiseCallback promise){
+        Log.e("map",map.getString("name"));
+        promise.resolve("success");
     }
 
 

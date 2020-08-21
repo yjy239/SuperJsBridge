@@ -1,10 +1,11 @@
 package com.yjy.superjsbridgedemo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.yjy.converter.GsonConvertFactory;
@@ -49,7 +50,8 @@ public class CallJavascriptActivity extends AppCompatActivity implements View.On
         dWebView.loadUrl("file:///android_asset/native-call-js.html");
 
         //请注意DsBridge 为了接口统一，只暴露了统一的接口，单参数进入和回调接口
-        bridge =  new Bridge.Builder(dWebView)
+        bridge =  new Bridge.Builder()
+                .setWebView(dWebView)
                 .setClientFactory(new DefaultDsBridgeFactory(dWebView)
                         .setReceiveFromPlatformCallback(new DSReceiveFromPlatformCallback() {
                     @Override

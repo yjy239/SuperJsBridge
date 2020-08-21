@@ -1,19 +1,17 @@
 package com.yjy.superjsbridgedemo;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.yjy.converter.GsonConvertFactory;
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.BridgeInterceptor;
-import com.yjy.superbridge.internal.CallBackHandler;
 import com.yjy.superbridge.internal.model.ResponseData;
-import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.BridgeWebView;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superbridge.jsbridge.DefaultJsBridgeFactory;
@@ -31,12 +29,13 @@ import com.yjy.superbridge.jsbridge.Message;
  */
 public class JsBridgeActivity extends AppCompatActivity {
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_js_bridge);
         final BridgeWebView view = findViewById(R.id.webView);
 //
-        final Bridge bridge =  new Bridge.Builder(view)
+        final Bridge bridge =  new Bridge.Builder()
+                .setWebView(view)
                 .setClientFactory(new DefaultJsBridgeFactory(view)
                 .setReceiveFromPlatformCallback(new JSReceiveFromPlatformCallback() {
                     @Override
@@ -93,8 +92,7 @@ public class JsBridgeActivity extends AppCompatActivity {
 //                function.complete("response: data");
 //            }
 //        },true);
-
-
+        
 
         view.loadUrl("file:///android_asset/demo.html");
     }

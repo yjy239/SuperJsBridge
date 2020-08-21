@@ -5,11 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme">
         <activity android:name="com.yjy.superjsbridgedemo.MainActivity">
             <intent-filter>
@@ -22,6 +24,13 @@
         <activity android:name=".CallJavascriptActivity" />
         <activity android:name=".JavascriptCallNativeActivity" />
         <activity android:name=".JsBridgeActivity"></activity>
+        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+        <activity android:name=".ReactBridgeActivity" />
+
+        <provider
+            android:name=".MyCP"
+            android:authorities="com.example.data"
+            />
 
     </application>
 

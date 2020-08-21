@@ -1,8 +1,9 @@
 package com.yjy.superjsbridgedemo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.yjy.converter.GsonConvertFactory;
@@ -24,7 +25,8 @@ public class JavascriptCallNativeActivity extends AppCompatActivity {
         final DSWebView dwebView= (DSWebView) findViewById(R.id.webview);
         // set debug mode
         DSWebView.setWebContentsDebuggingEnabled(true);
-        Bridge bridge =  new Bridge.Builder(dwebView)
+        Bridge bridge =  new Bridge.Builder()
+                .setWebView(dwebView)
                 .setClientFactory(new DefaultDsBridgeFactory(dwebView)
                 .setReceiveFromPlatformCallback(new DSReceiveFromPlatformCallback() {
                     @Override

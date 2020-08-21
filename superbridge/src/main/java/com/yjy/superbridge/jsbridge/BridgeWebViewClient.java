@@ -2,10 +2,11 @@ package com.yjy.superbridge.jsbridge;
 
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.annotation.RequiresApi;
 
 import com.yjy.superbridge.internal.IBridgeClient;
 

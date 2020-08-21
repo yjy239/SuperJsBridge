@@ -1,15 +1,24 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.yjy.aspectjhelper'
+
+apply from: "../../../node_modules/react-native/react.gradle"
+
+
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.yjy.superjsbridge"
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion 16
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk{
+            // 设置支持的SO库架构.目的是确保最终的 apk 中只包含指定 cpu 架构文件
+            abiFilters "armeabi", "armeabi-v7a", "x86"
+        }
     }
     buildTypes {
         release {
@@ -19,16 +28,50 @@ android {
     }
 }
 
+allprojects {
+    repositories {
+        maven {
+            // All of React Native (JS, Android binaries) is installed from npm
+            url "$rootDir/../../node_modules/react-native/android"
+        }
+
+
+        maven {
+            // Android JSC is installed from npm
+            url("$rootDir/../../node_modules/jsc-android/dist")
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     api project(':superbridge')
     implementation project(path: ':dsbridge')
     implementation project(path: ':converter')
+    implementation project(path: ':rnbridge')
+
+
+//    implementation("com.facebook.flipper:flipper:0.35.0") {
+//        exclude group:'com.facebook.fbjni'
+//    }
+//
+//    implementation("com.facebook.flipper:flipper-network-plugin:0.35.0") {
+//        exclude group:'com.facebook.flipper'
+//    }
+//
+//    implementation("com.facebook.flipper:flipper-fresco-plugin:0.35.0") {
+//        exclude group:'com.facebook.flipper'
+//    }
+
+
+
 }
+
+
 
 

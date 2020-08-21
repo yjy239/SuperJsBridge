@@ -95,8 +95,12 @@ public class Bridge {
         IBridgeFactory factory;
         ConvertFactory convertFactory;
         ArrayList<BridgeInterceptor> mInterceptors = new ArrayList<>();
-        public Builder(IWebView webView){
-            this.webView = webView;
+        public Builder(){
+        }
+
+        public Builder setWebView(IWebView webView){
+            this.webView =webView;
+            return this;
         }
 
 
@@ -140,7 +144,10 @@ public class Bridge {
                 core.registerObj(entry.getKey(),entry.getValue());
             }
 
-            webView.setClient(client);
+            if(webView!=null){
+                webView.setClient(client);
+            }
+
 
             return new Bridge(core);
         }

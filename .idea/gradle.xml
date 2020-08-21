@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/aspectjhelper" />
             <option value="$PROJECT_DIR$/converter" />
             <option value="$PROJECT_DIR$/dsbridge" />
+            <option value="$PROJECT_DIR$/rnbridge" />
             <option value="$PROJECT_DIR$/superbridge" />
           </set>
         </option>

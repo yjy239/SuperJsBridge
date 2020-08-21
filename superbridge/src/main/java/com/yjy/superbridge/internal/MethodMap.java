@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -179,7 +180,21 @@ public class MethodMap {
         mConvertFactory = factory;
     }
 
-    static class Invoker{
+    public ArrayList<Invoker> get(String  namespace) {
+        ArrayList<Invoker> methods = new ArrayList<>();
+        Object obj = mNamespaceInterfaces.get(namespace);
+        if(obj == null){
+            return null;
+        }
+        Map<String,Invoker> map = methodMap.get(obj);
+        for(Map.Entry<String,Invoker> invokerEntry : map.entrySet()){
+            methods.add(invokerEntry.getValue());
+        }
+        return methods;
+
+    }
+
+    public static class Invoker{
         private Method method = null;
         private int isAsync = ASYNC_UNDEFINED;
         private int isInterceptor= INTERCEPTOR_UNDEFINED;
@@ -208,7 +223,11 @@ public class MethodMap {
             return null;
         }
 
-        boolean isAsync() {
+        public Method getMethod() {
+            return method;
+        }
+
+        public boolean isAsync() {
             if(isAsync == ASYNC_UNDEFINED){
                 boolean async = false;
                 Class<?>[] types = method.getParameterTypes();
@@ -262,8 +281,6 @@ public class MethodMap {
                         methodParameterNames.add(name);
                     }
                 }
-
-
 
                 boolean isAsync = types[types.length-1] == CallBackHandler.class
                         ||CallBackHandler.class.isAssignableFrom(types[types.length-1]);
