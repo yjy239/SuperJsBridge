@@ -6,6 +6,7 @@ import com.facebook.react.bridge.JSInstance;
 import com.facebook.react.bridge.JavaModuleWrapper;
 import com.facebook.react.bridge.ModuleHolder;
 import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableNativeArray;
 import com.facebook.systrace.Systrace;
 import com.yjy.rnbridge.util.ReflectUtils;
@@ -71,8 +72,24 @@ public class BridgeModuleWrapper extends JavaModuleWrapper {
         List<MethodMap.Invoker> methods  = methodMap.get(mName);
 
         for(int i = 0;i<methods.size();i++){
+            boolean isSync = !methods.get(i).isAsync();
+            Class<?>[] types = methods.get(i).getMethod().getParameterTypes();
+            Class<?> returnTypes = methods.get(i).getMethod().getReturnType();
+            boolean isPromise = false;
+            if(types.length > 1){
+                isPromise = (types[types.length-1] != Promise.class);
+            }
+            //void 就是async，不需要返回等待
+            boolean  isVoid = (returnTypes == void.class);
+
+            if(isPromise){
+                isSync = false;
+            }else if(isVoid){
+                isSync = false;
+            }
+
             BridgeMethodWrapper wrapper = new BridgeMethodWrapper(this,
-                    methods.get(i).getMethod(),methods.get(i).isAsync(),mActionObj);
+                    methods.get(i).getMethod(),isSync,mActionObj,mCore.getMethodMap().getConvertFactory());
             list.add(setMethodDescriptor(wrapper.getMethod(),
                     wrapper.getSignature(),wrapper.getMethod().getName(),wrapper.getType()));
             mMethods.add(wrapper);

@@ -7,13 +7,11 @@ import androidx.annotation.Nullable;
 import com.facebook.debug.holder.PrinterHolder;
 import com.facebook.debug.tags.ReactDebugOverlayTags;
 import com.facebook.infer.annotation.Assertions;
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.BaseJavaModule;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.DynamicFromArray;
 import com.facebook.react.bridge.JSInstance;
-import com.facebook.react.bridge.JavaMethodWrapper;
 import com.facebook.react.bridge.JavaModuleWrapper;
 import com.facebook.react.bridge.NativeArgumentsParseException;
 import com.facebook.react.bridge.NativeModule;
@@ -28,11 +26,18 @@ import com.facebook.systrace.SystraceMessage;
 import com.yjy.rnbridge.RnBridge.BridgeCallbackImpl;
 import com.yjy.rnbridge.RnBridge.BridgePromiseCallback;
 import com.yjy.rnbridge.RnBridge.PromiseCallback;
+import com.yjy.rnbridge.RnBridge.TransformObject;
 import com.yjy.superbridge.internal.CallBackHandler;
+import com.yjy.superbridge.internal.Utils.$Types$;
+import com.yjy.superbridge.internal.Utils.TypeToken;
+import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -57,6 +62,20 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
         public abstract @Nullable T extractArgument(
                 JSInstance jsInstance, ReadableArray jsArguments, int atIndex);
     }
+
+
+    private abstract static class DyncArgumentExtractor<T> extends ArgumentExtractor<T> {
+        protected Type mType;
+        DyncArgumentExtractor(Type type){
+            this.mType = type;
+        }
+
+    }
+
+
+
+
+
 
     private static final ArgumentExtractor<Boolean> ARGUMENT_EXTRACTOR_BOOLEAN =
             new ArgumentExtractor<Boolean>() {
@@ -108,7 +127,6 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
                 @Override
                 public ReadableArray extractArgument(
                         JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
-                    Log.e("ReadableArray",jsArguments.getArray(atIndex).toString());
                     return jsArguments.getArray(atIndex);
                 }
             };
@@ -127,10 +145,11 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
                 @Override
                 public ReadableMap extractArgument(
                         JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
-                    Log.e("ReadableMap",jsArguments.getMap(atIndex).toString());
                     return jsArguments.getMap(atIndex);
                 }
             };
+
+
 
     private static final ArgumentExtractor<Callback> ARGUMENT_EXTRACTOR_CALLBACK =
             new ArgumentExtractor<Callback>() {
@@ -205,6 +224,8 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
     private static final boolean DEBUG =
             PrinterHolder.getPrinter().shouldDisplayLogMessage(ReactDebugOverlayTags.BRIDGE_CALLS);
 
+    private static boolean isTransform = true;
+
     private static char paramTypeToChar(Class paramClass) {
         char tryCommon = commonTypeToChar(paramClass);
         if (tryCommon != '\0') {
@@ -220,6 +241,10 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             return 'A';
         } else if (paramClass == Dynamic.class) {
             return 'Y';
+        }else if(isTransform &&(paramClass.isArray()||Collection.class.isAssignableFrom(paramClass))){
+            return 'A';
+        } else if(isTransform){
+            return 'M';
         }else {
             throw new RuntimeException("Got unknown param class: " + paramClass.getSimpleName());
         }
@@ -237,6 +262,10 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             return 'M';
         } else if (returnClass == WritableArray.class) {
             return 'A';
+        }else if(isTransform &&(returnClass.isArray()||Collection.class.isAssignableFrom(returnClass))){
+            return 'A';
+        } else if(isTransform){
+            return 'M';
         } else {
             throw new RuntimeException("Got unknown return class: " + returnClass.getSimpleName());
         }
@@ -268,6 +297,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
 
     private final Method mMethod;
     private final Class[] mParameterTypes;
+    private final Type[] mParameterGenericTypes;
     private final int mParamLength;
     private final JavaModuleWrapper mModuleWrapper;
     private String mType = BaseJavaModule.METHOD_TYPE_ASYNC;
@@ -277,18 +307,23 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
     private @Nullable Object[] mArguments;
     private @Nullable int mJSArgumentsNeeded;
     private Object mRealActionObject;
+    private ConvertFactory mFactory;
 
-    public BridgeMethodWrapper(JavaModuleWrapper module, Method method, boolean isSync,Object obj) {
+    public BridgeMethodWrapper(JavaModuleWrapper module, Method method, boolean isSync, Object obj,
+                               ConvertFactory factory) {
         mModuleWrapper = module;
         mMethod = method;
         mMethod.setAccessible(true);
         mParameterTypes = mMethod.getParameterTypes();
+        mParameterGenericTypes = mMethod.getGenericParameterTypes();
         mParamLength = mParameterTypes.length;
         mRealActionObject = obj;
+        this.mFactory = factory;
 
         if (isSync) {
             mType = BaseJavaModule.METHOD_TYPE_SYNC;
-        } else if (mParamLength > 0 && (mParameterTypes[mParamLength - 1] == Promise.class)) {
+        } else if (mParamLength > 0 && (mParameterTypes[mParamLength - 1] == Promise.class
+                ||mParameterTypes[mParamLength - 1] == PromiseCallback.class)) {
             mType = BaseJavaModule.METHOD_TYPE_PROMISE;
         }
     }
@@ -322,6 +357,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
         if (!mArgumentsProcessed) {
             processArguments();
         }
+        Log.e("Signature",mSignature);
         return assertNotNull(mSignature);
     }
 
@@ -383,6 +419,58 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
                 argumentExtractors[i] = ARGUMENT_EXTRACTOR_COMPLETE_CALLBACK;
             } else if(argumentClass == PromiseCallback.class){
                 argumentExtractors[i] = ARGUMENT_EXTRACTOR_COMPLETE_PROMISE;
+            } else if(isTransform &&(argumentClass.isArray()||Collection.class.isAssignableFrom(argumentClass))){
+
+                argumentExtractors[i]  = new DyncArgumentExtractor<Object>(mParameterGenericTypes[i]) {
+                    @Nullable
+                    @Override
+                    public Object extractArgument(JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        Object object = null;
+                        ReadableArray array =  jsArguments.getArray(atIndex);
+                        //转化为一个Object
+
+                        if(array != null){
+                            String args = array.toString();
+                            Log.e("args",args);
+                            Log.e("Type",mType.toString());
+                            if(mFactory != null){
+                                try{
+                                    object = mFactory.createConverter(mType).convert(args);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                        return object;
+                    }
+                };
+            } else if(isTransform){
+
+                argumentExtractors[i] = new DyncArgumentExtractor<Object>(mParameterGenericTypes[i]) {
+                    @Nullable
+                    @Override
+                    public Object extractArgument(JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        TransformObject object = new TransformObject();
+                        ReadableMap map =  jsArguments.getMap(atIndex);
+                        ParameterizedType type = new $Types$.ParameterizedTypeImpl(TransformObject.class,
+                                TransformObject.class, mType);
+                        //转化为一个Object
+                        if(map != null){
+                            String args = map.toString();
+                            args = args.replace("NativeMap","\"NativeMap\"");
+                            if(mFactory != null){
+                                try{
+                                    object = (TransformObject)mFactory.createConverter(type).convert(args);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                        return object.NativeMap;
+                    }
+                };
             } else {
                 throw new RuntimeException("Got unknown argument class: " + argumentClass.getSimpleName());
             }

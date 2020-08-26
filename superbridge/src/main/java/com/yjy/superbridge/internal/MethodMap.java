@@ -180,6 +180,11 @@ public class MethodMap {
         mConvertFactory = factory;
     }
 
+    public ConvertFactory getConvertFactory() {
+        return mConvertFactory;
+    }
+
+
     public ArrayList<Invoker> get(String  namespace) {
         ArrayList<Invoker> methods = new ArrayList<>();
         Object obj = mNamespaceInterfaces.get(namespace);

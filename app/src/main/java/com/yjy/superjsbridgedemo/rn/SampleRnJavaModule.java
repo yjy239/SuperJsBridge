@@ -35,7 +35,7 @@ public class SampleRnJavaModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void read(String map){
+    public void readString(String map){
         Log.e("map",map);
     }
 
