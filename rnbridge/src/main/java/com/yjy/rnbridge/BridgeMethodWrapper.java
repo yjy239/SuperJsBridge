@@ -204,10 +204,6 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
 
     private static final ArgumentExtractor<CallBackHandler> ARGUMENT_EXTRACTOR_COMPLETE_CALLBACK =
             new ArgumentExtractor<CallBackHandler>() {
-                @Override
-                public int getJSArgumentsNeeded() {
-                    return 2;
-                }
 
                 @Override
                 public CallBackHandler extractArgument(

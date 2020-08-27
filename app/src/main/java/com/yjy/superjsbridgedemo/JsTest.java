@@ -3,6 +3,7 @@ package com.yjy.superjsbridgedemo;
 import android.net.Uri;
 import android.util.Log;
 
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -54,7 +55,7 @@ public class JsTest extends BridgeInterface {
 
 
     @BridgeMethod(interceptor = true)
-    public void callback(User map, PromiseCallback promise){
+    public void promiseTest(User map, PromiseCallback promise){
         Log.e("user",map.name);
         promise.resolve("success");
     }
@@ -75,7 +76,7 @@ public class JsTest extends BridgeInterface {
 //    }
 
     @BridgeMethod(interceptor = true)
-    public void callbackArray(ArrayList<URL> array, PromiseCallback promise){
+    public void promiseArray(ArrayList<URL> array, PromiseCallback promise){
         int size = array.size();
         for (int i = 0; i < size; i++) {
             URL map = array.get(i);
@@ -90,7 +91,7 @@ public class JsTest extends BridgeInterface {
     }
 
     @BridgeMethod(interceptor = true)
-    public void callBack(ArrayList<URL> array, CallBackHandler callbackHandler){
+    public void callBackArray(ArrayList<URL> array, CallBackHandler callbackHandler){
         int size = array.size();
         for (int i = 0; i < size; i++) {
             URL map = array.get(i);
@@ -101,7 +102,13 @@ public class JsTest extends BridgeInterface {
             }
         }
 
-        callbackHandler.complete("Array success");
+        callbackHandler.complete("callBackArray success");
+    }
+
+    @BridgeMethod(interceptor = true)
+    public void callbackTest(User map, CallBackHandler callbackHandler){
+        Log.e("user",map.name);
+        callbackHandler.complete("callbackTest success");
     }
 
 
