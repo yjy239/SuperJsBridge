@@ -1,4 +1,4 @@
-package com.yjy.rnbridge;
+package com.yjy.rnbridge.RnCompent.dynamic;
 
 import com.facebook.react.bridge.ModuleHolder;
 import com.facebook.react.bridge.NativeModule;
@@ -39,9 +39,6 @@ public class BridgeModuleHolder extends ModuleHolder {
     }
 
 
-    public NativeModule getNativeModule() {
-        return nativeModule;
-    }
 
     @Override
     public String getName() {

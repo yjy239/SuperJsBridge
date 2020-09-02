@@ -1,4 +1,4 @@
-package com.yjy.rnbridge;
+package com.yjy.rnbridge.RnCompent.core;
 
 import android.util.Log;
 
@@ -71,10 +71,6 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
         }
 
     }
-
-
-
-
 
 
     private static final ArgumentExtractor<Boolean> ARGUMENT_EXTRACTOR_BOOLEAN =
@@ -353,7 +349,6 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
         if (!mArgumentsProcessed) {
             processArguments();
         }
-        Log.e("Signature",mSignature);
         return assertNotNull(mSignature);
     }
 
@@ -427,8 +422,6 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
 
                         if(array != null){
                             String args = array.toString();
-                            Log.e("args",args);
-                            Log.e("Type",mType.toString());
                             if(mFactory != null){
                                 try{
                                     object = mFactory.createConverter(mType).convert(args);

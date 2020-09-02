@@ -1,4 +1,4 @@
-package com.yjy.rnbridge;
+package com.yjy.rnbridge.RnCompent.dynamic;
 
 import com.facebook.proguard.annotations.DoNotStrip;
 import com.facebook.react.bridge.BaseJavaModule;
@@ -9,6 +9,8 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableNativeArray;
 import com.facebook.systrace.Systrace;
+import com.yjy.rnbridge.RnBridge.RnCore;
+import com.yjy.rnbridge.RnCompent.core.BridgeMethodWrapper;
 import com.yjy.rnbridge.util.ReflectUtils;
 import com.yjy.superbridge.internal.BridgeHelper;
 import com.yjy.superbridge.internal.MethodMap;

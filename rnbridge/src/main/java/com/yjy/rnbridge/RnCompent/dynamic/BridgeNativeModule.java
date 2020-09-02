@@ -1,4 +1,4 @@
-package com.yjy.rnbridge;
+package com.yjy.rnbridge.RnCompent.dynamic;
 
 import androidx.annotation.NonNull;
 

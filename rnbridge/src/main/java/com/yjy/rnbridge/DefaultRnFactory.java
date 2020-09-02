@@ -1,10 +1,10 @@
 package com.yjy.rnbridge;
 
 import com.facebook.react.ReactInstanceManager;
+import com.yjy.rnbridge.RnBridge.RnCore;
 import com.yjy.superbridge.internal.IBridgeClient;
 import com.yjy.superbridge.internal.IBridgeCore;
 import com.yjy.superbridge.internal.IBridgeFactory;
-import com.yjy.superbridge.internal.ReceiveFromPlatformCallback;
 
 /**
  * <pre>
@@ -17,6 +17,7 @@ import com.yjy.superbridge.internal.ReceiveFromPlatformCallback;
  */
 public class DefaultRnFactory implements IBridgeFactory<RnReceiveFromPlatformCallback> {
     private ReactInstanceManager mReactInstanceManager;
+    private RnReceiveFromPlatformCallback mCallback;
     public DefaultRnFactory(ReactInstanceManager manager){
         mReactInstanceManager = manager;
     }
@@ -32,11 +33,12 @@ public class DefaultRnFactory implements IBridgeFactory<RnReceiveFromPlatformCal
 
     @Override
     public IBridgeFactory setReceiveFromPlatformCallback(RnReceiveFromPlatformCallback callback) {
-        return null;
+        this.mCallback = callback;
+        return this;
     }
 
     @Override
     public RnReceiveFromPlatformCallback getReceiveFromPlatformCallback() {
-        return null;
+        return mCallback;
     }
 }

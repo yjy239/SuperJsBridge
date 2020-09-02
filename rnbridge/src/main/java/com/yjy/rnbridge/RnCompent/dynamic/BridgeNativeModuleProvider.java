@@ -1,12 +1,9 @@
-package com.yjy.rnbridge.RnCompent;
+package com.yjy.rnbridge.RnCompent.dynamic;
 
 import com.facebook.react.bridge.JSInstance;
 import com.facebook.react.bridge.ModuleHolder;
 import com.facebook.react.bridge.NativeModule;
-import com.facebook.react.module.model.ReactModuleInfo;
-import com.yjy.rnbridge.BridgeModuleWrapper;
-import com.yjy.rnbridge.BridgeNativeModule;
-import com.yjy.rnbridge.RnCore;
+import com.yjy.rnbridge.RnBridge.RnCore;
 
 import javax.inject.Provider;
 

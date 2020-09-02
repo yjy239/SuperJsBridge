@@ -8,17 +8,21 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.ReactBridge;
 import com.google.gson.Gson;
 import com.yjy.converter.GsonConvertFactory;
 import com.yjy.rnbridge.DefaultRnFactory;
 import com.yjy.superbridge.internal.Bridge;
 import com.yjy.superbridge.internal.BridgeInterceptor;
+import com.yjy.superbridge.internal.CallBackHandler;
 import com.yjy.superbridge.internal.model.ResponseData;
+import com.yjy.superbridge.jsbridge.BridgeHandler;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superbridge.jsbridge.DefaultJsBridgeFactory;
 import com.yjy.superbridge.jsbridge.JSReceiveFromPlatformCallback;
 import com.yjy.superbridge.jsbridge.Message;
+import com.yjy.superjsbridgedemo.rn.JSModule;
 
 /**
  * <pre>
@@ -43,5 +47,26 @@ public class ReactBridgeActivity extends ReactActivity {
                 .setConvertFactory(GsonConvertFactory.create(new Gson()))
                 .registerInterface("Sample",new JsTest())
                 .build();
+
+
+        bridge.registerHandler("registerTest", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackHandler<String> function) {
+                Log.e("result",data);
+
+                function.complete("registerTest success");
+            }
+        });
+
+        bridge.registerHandler("calHandlerTest", new BridgeHandler() {
+            @Override
+            public void handler(String data, CallBackHandler<String> function) {
+                Log.e("result",data);
+
+                bridge.callHandler("JSModule.callHandler","send msg",null);
+
+                function.complete("calHandlerTest success");
+            }
+        });
     }
 }

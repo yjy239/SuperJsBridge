@@ -1,7 +1,6 @@
 package com.yjy.rnbridge.util;
 
 import com.facebook.react.module.model.ReactModuleInfo;
-import com.yjy.rnbridge.BridgeModuleHolder;
 
 /**
  * <pre>
