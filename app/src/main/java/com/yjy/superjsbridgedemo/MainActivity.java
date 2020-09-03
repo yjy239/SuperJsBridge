@@ -7,6 +7,8 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import io.flutter.embedding.android.FlutterActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -44,6 +46,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,ReactBridgeActivity.class));
             }
         });
+
+        findViewById(R.id.flutter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(MainActivity.this,FlutterBridgeActivity.class));
+            }
+        });
+
+//        Intent i = new Intent(MainActivity.this, FlutterActivity.class);
 
 
 

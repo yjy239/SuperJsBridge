@@ -13,4 +13,6 @@ import java.io.IOException;
  */
 public interface Converter<F,T> {
    T convert(F value) throws IOException;
+
+   F toConvert(T value) throws IOException;
 }

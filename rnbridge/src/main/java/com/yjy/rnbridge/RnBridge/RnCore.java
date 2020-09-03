@@ -7,6 +7,7 @@ import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.CatalystInstanceImpl;
 import com.facebook.react.bridge.JavaModuleWrapper;
 import com.facebook.react.bridge.ModuleHolder;
+import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.NativeModuleRegistry;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.module.model.ReactModuleInfo;
@@ -164,9 +165,18 @@ public class RnCore extends BaseBridgeCore {
     private void registerObjInternal(String name, Object obj){
         if(catalystInstance!=null){
 
-            registryMap.put(name,new BridgeModuleHolder(Utils.getInfo(name,obj),
-                    new BridgeNativeModuleProvider(catalystInstance,this,
-                            name,obj),name,this,obj));
+            if(obj instanceof NativeModule){
+                NativeModule module = (NativeModule)obj;
+                registryMap.put(name,new BridgeModuleHolder(Utils.getInfo(name,obj),
+                        new BridgeNativeModuleProvider(catalystInstance,this,
+                                name,obj),name,this,module));
+            }else{
+                registryMap.put(name,new BridgeModuleHolder(Utils.getInfo(name,obj),
+                        new BridgeNativeModuleProvider(catalystInstance,this,
+                                name,obj),name,this,obj));
+            }
+
+
         }
     }
 

@@ -1,4 +1,4 @@
-package com.yjy.superjsbridgedemo;
+package com.yjy.superjsbridgedemo.bridge;
 
 import android.util.Log;
 
@@ -15,7 +15,7 @@ import org.json.JSONException;
  * Created by du on 16/12/31.
  */
 
-public class JsEchoApi extends BridgeInterface {
+public class JsEchoApi {
 
     @BridgeMethod(interceptor = true)
     public Object syn(@BridgeField(name = "msg") String msg,

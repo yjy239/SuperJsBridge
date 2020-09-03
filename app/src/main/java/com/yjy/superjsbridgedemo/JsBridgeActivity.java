@@ -17,6 +17,7 @@ import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superbridge.jsbridge.DefaultJsBridgeFactory;
 import com.yjy.superbridge.jsbridge.JSReceiveFromPlatformCallback;
 import com.yjy.superbridge.jsbridge.Message;
+import com.yjy.superjsbridgedemo.bridge.JsTest;
 
 /**
  * <pre>

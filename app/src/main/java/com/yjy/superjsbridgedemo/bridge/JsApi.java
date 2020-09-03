@@ -1,4 +1,4 @@
-package com.yjy.superjsbridgedemo;
+package com.yjy.superjsbridgedemo.bridge;
 
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -18,7 +18,7 @@ import org.json.JSONObject;
  * Created by du on 16/12/31.
  */
 
-public class JsApi extends BridgeInterface {
+public class JsApi  {
     @BridgeMethod
     public String testSyn(Object msg)  {
         Log.e("Type",msg.getClass().toString());

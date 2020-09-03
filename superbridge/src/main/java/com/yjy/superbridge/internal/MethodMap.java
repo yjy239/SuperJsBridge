@@ -1,14 +1,11 @@
 package com.yjy.superbridge.internal;
 
-import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.internal.convert.Converter;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
-import com.yjy.superbridge.jsbridge.CallBackFunction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +15,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -318,12 +314,21 @@ public class MethodMap {
                     if(isAsync){
                         params[types.length - 1] = handler;
                     }
-
-
-                    return invoke(obj,params);
+                    Object res = invoke(obj,params);
+                    if(res == null){
+                        return null;
+                    }
+                    Converter converter = factory.createConverter(res.getClass(),null );
+                    return converter.toConvert(res);
                 }catch (JSONException je){
                     je.printStackTrace();
-                    return invoke(obj,params);
+
+                    Object res = invoke(obj,params);
+                    if(res == null){
+                        return null;
+                    }
+                    Converter converter = factory.createConverter(res.getClass(), null);
+                    return converter.toConvert(res);
                 }
 
             }catch (Exception e){
@@ -355,7 +360,7 @@ public class MethodMap {
                 params[index] = TextUtils.isEmpty(value)?null:Uri.parse(value);
             } else {
                 if(factory != null){
-                    Converter converter = factory.createConverter(type);
+                    Converter converter = factory.createConverter(type, null);
                     if(converter != null){
                         try {
                             params[index] = converter.convert(value);

@@ -12,5 +12,5 @@ import java.lang.reflect.Type;
  * </pre>
  */
 public interface ConvertFactory {
-    Converter createConverter(Type type);
+    Converter createConverter(Type type, ChildConvertFactory factory);
 }

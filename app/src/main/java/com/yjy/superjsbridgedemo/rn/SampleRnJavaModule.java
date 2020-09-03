@@ -11,6 +11,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.module.annotations.ReactModule;
+import com.yjy.superbridge.internal.BridgeMethod;
+import com.yjy.superjsbridgedemo.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,5 +61,11 @@ public class SampleRnJavaModule extends ReactContextBaseJavaModule {
         }
 
         promise.resolve("Array success");
+    }
+
+    @ReactMethod(isBlockingSynchronousMethod = true)
+    public String returnTest(String map){
+        Log.e("user",map);
+        return "success";
     }
 }

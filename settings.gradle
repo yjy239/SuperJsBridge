@@ -1,4 +1,11 @@
 include ':app', ':superbridge', ':aspectjhelper'
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+  settingsDir,
+  'flutterbridge/.android/include_flutter.groovy'
+))
 include ':dsbridge'
 include ':converter'
 include ':rnbridge'
+
+include ':flutterbridge'

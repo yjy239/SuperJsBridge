@@ -29,7 +29,7 @@ import com.yjy.rnbridge.RnBridge.PromiseCallback;
 import com.yjy.rnbridge.RnBridge.TransformObject;
 import com.yjy.superbridge.internal.CallBackHandler;
 import com.yjy.superbridge.internal.Utils.$Types$;
-import com.yjy.superbridge.internal.Utils.TypeToken;
+import com.yjy.superbridge.internal.convert.ChildConvertFactory;
 import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.jsbridge.CallBackFunction;
 
@@ -60,7 +60,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
         }
 
         public abstract @Nullable T extractArgument(
-                JSInstance jsInstance, ReadableArray jsArguments, int atIndex);
+                JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory);
     }
 
 
@@ -77,7 +77,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             new ArgumentExtractor<Boolean>() {
                 @Override
                 public Boolean extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     return jsArguments.getBoolean(atIndex);
                 }
             };
@@ -86,7 +86,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             new ArgumentExtractor<Double>() {
                 @Override
                 public Double extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     return jsArguments.getDouble(atIndex);
                 }
             };
@@ -95,7 +95,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             new ArgumentExtractor<Float>() {
                 @Override
                 public Float extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     return (float) jsArguments.getDouble(atIndex);
                 }
             };
@@ -104,7 +104,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             new ArgumentExtractor<Integer>() {
                 @Override
                 public Integer extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     return (int) jsArguments.getDouble(atIndex);
                 }
             };
@@ -113,7 +113,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             new ArgumentExtractor<String>() {
                 @Override
                 public String extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     return jsArguments.getString(atIndex);
                 }
             };
@@ -122,7 +122,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             new ArgumentExtractor<ReadableArray>() {
                 @Override
                 public ReadableArray extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     return jsArguments.getArray(atIndex);
                 }
             };
@@ -131,7 +131,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             new ArgumentExtractor<Dynamic>() {
                 @Override
                 public Dynamic extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     return DynamicFromArray.create(jsArguments, atIndex);
                 }
             };
@@ -140,7 +140,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             new ArgumentExtractor<ReadableMap>() {
                 @Override
                 public ReadableMap extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     return jsArguments.getMap(atIndex);
                 }
             };
@@ -151,7 +151,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             new ArgumentExtractor<Callback>() {
                 @Override
                 public @Nullable Callback extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     if (jsArguments.isNull(atIndex)) {
                         return null;
                     } else {
@@ -170,11 +170,11 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
 
                 @Override
                 public Promise extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     Callback resolve =
-                            ARGUMENT_EXTRACTOR_CALLBACK.extractArgument(jsInstance, jsArguments, atIndex);
+                            ARGUMENT_EXTRACTOR_CALLBACK.extractArgument(jsInstance, jsArguments, atIndex,factory );
                     Callback reject =
-                            ARGUMENT_EXTRACTOR_CALLBACK.extractArgument(jsInstance, jsArguments, atIndex + 1);
+                            ARGUMENT_EXTRACTOR_CALLBACK.extractArgument(jsInstance, jsArguments, atIndex + 1,factory );
                     return new PromiseImpl(resolve, reject);
                 }
             };
@@ -189,11 +189,11 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
 
                 @Override
                 public PromiseCallback extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
-                    Callback resolve =
-                            ARGUMENT_EXTRACTOR_CALLBACK.extractArgument(jsInstance, jsArguments, atIndex);
-                    Callback reject =
-                            ARGUMENT_EXTRACTOR_CALLBACK.extractArgument(jsInstance, jsArguments, atIndex + 1);
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
+                    CallBackHandler resolve =
+                            ARGUMENT_EXTRACTOR_COMPLETE_CALLBACK.extractArgument(jsInstance, jsArguments, atIndex,factory );
+                    CallBackHandler reject =
+                            ARGUMENT_EXTRACTOR_COMPLETE_CALLBACK.extractArgument(jsInstance, jsArguments, atIndex + 1,factory );
                     return new BridgePromiseCallback(resolve, reject);
                 }
             };
@@ -203,12 +203,12 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
 
                 @Override
                 public CallBackHandler extractArgument(
-                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                        JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                     if (jsArguments.isNull(atIndex)) {
                         return null;
                     } else {
                         int id = (int) jsArguments.getDouble(atIndex);
-                        return new BridgeCallbackImpl(jsInstance, id);
+                        return new BridgeCallbackImpl(jsInstance, id,factory);
                     }
                 }
             };
@@ -300,6 +300,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
     private @Nullable int mJSArgumentsNeeded;
     private Object mRealActionObject;
     private ConvertFactory mFactory;
+    private static final String TAG = BridgeMethodWrapper.class.getSimpleName();
 
     public BridgeMethodWrapper(JavaModuleWrapper module, Method method, boolean isSync, Object obj,
                                ConvertFactory factory) {
@@ -415,16 +416,15 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
                 argumentExtractors[i]  = new DyncArgumentExtractor<Object>(mParameterGenericTypes[i]) {
                     @Nullable
                     @Override
-                    public Object extractArgument(JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                    public Object extractArgument(JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                         Object object = null;
                         ReadableArray array =  jsArguments.getArray(atIndex);
                         //转化为一个Object
-
                         if(array != null){
                             String args = array.toString();
                             if(mFactory != null){
                                 try{
-                                    object = mFactory.createConverter(mType).convert(args);
+                                    object = mFactory.createConverter(mType, null).convert(args);
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }
@@ -439,7 +439,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
                 argumentExtractors[i] = new DyncArgumentExtractor<Object>(mParameterGenericTypes[i]) {
                     @Nullable
                     @Override
-                    public Object extractArgument(JSInstance jsInstance, ReadableArray jsArguments, int atIndex) {
+                    public Object extractArgument(JSInstance jsInstance, ReadableArray jsArguments, int atIndex, ConvertFactory factory) {
                         TransformObject object = new TransformObject();
                         ReadableMap map =  jsArguments.getMap(atIndex);
                         ParameterizedType type = new $Types$.ParameterizedTypeImpl(TransformObject.class,
@@ -450,7 +450,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
                             args = args.replace("NativeMap","\"NativeMap\"");
                             if(mFactory != null){
                                 try{
-                                    object = (TransformObject)mFactory.createConverter(type).convert(args);
+                                    object = (TransformObject)mFactory.createConverter(type, null).convert(args);
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }
@@ -511,7 +511,7 @@ public class BridgeMethodWrapper implements NativeModule.NativeMethod {
             try {
                 for (; i < mArgumentExtractors.length; i++) {
                     mArguments[i] =
-                            mArgumentExtractors[i].extractArgument(jsInstance, parameters, jsArgumentsConsumed);
+                            mArgumentExtractors[i].extractArgument(jsInstance, parameters, jsArgumentsConsumed,mFactory);
                     jsArgumentsConsumed += mArgumentExtractors[i].getJSArgumentsNeeded();
                 }
             } catch (UnexpectedNativeTypeException e) {

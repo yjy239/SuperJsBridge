@@ -2,27 +2,16 @@ package com.yjy.superjsbridgedemo;
 
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.facebook.react.ReactActivity;
-import com.facebook.react.bridge.CatalystInstance;
-import com.facebook.react.bridge.ReactBridge;
 import com.google.gson.Gson;
 import com.yjy.converter.GsonConvertFactory;
 import com.yjy.rnbridge.DefaultRnFactory;
 import com.yjy.superbridge.internal.Bridge;
-import com.yjy.superbridge.internal.BridgeInterceptor;
 import com.yjy.superbridge.internal.CallBackHandler;
-import com.yjy.superbridge.internal.model.ResponseData;
 import com.yjy.superbridge.jsbridge.BridgeHandler;
-import com.yjy.superbridge.jsbridge.CallBackFunction;
-import com.yjy.superbridge.jsbridge.DefaultJsBridgeFactory;
-import com.yjy.superbridge.jsbridge.JSReceiveFromPlatformCallback;
-import com.yjy.superbridge.jsbridge.Message;
-import com.yjy.superjsbridgedemo.rn.JSModule;
+import com.yjy.superjsbridgedemo.bridge.JsTest;
 
 /**
  * <pre>

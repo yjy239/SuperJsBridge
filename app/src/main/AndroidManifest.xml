@@ -26,11 +26,7 @@
         <activity android:name=".JsBridgeActivity"></activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
         <activity android:name=".ReactBridgeActivity" />
-
-        <provider
-            android:name=".MyCP"
-            android:authorities="com.example.data"
-            />
+        <activity android:name=".FlutterBridgeActivity" />
 
     </application>
 

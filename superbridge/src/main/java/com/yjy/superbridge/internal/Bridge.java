@@ -89,7 +89,7 @@ public class Bridge {
 
     public static class Builder{
         private IWebView webView;
-        Map<String,BridgeInterface> observableMap = new HashMap<>();
+        Map<String,Object> observableMap = new HashMap<>();
         IBridgeClient client;
         IBridgeCore core;
         IBridgeFactory factory;
@@ -105,7 +105,7 @@ public class Bridge {
 
 
 
-        public Builder registerInterface(String name,BridgeInterface object){
+        public Builder registerInterface(String name,Object object){
             observableMap.put(name,object);
             return this;
         }
@@ -140,7 +140,7 @@ public class Bridge {
 
             core.setReceiveCallback(factory.getReceiveFromPlatformCallback());
 
-            for(Map.Entry<String,BridgeInterface> entry : observableMap.entrySet()){
+            for(Map.Entry<String,Object> entry : observableMap.entrySet()){
                 core.registerObj(entry.getKey(),entry.getValue());
             }
 

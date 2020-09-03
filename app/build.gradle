@@ -20,6 +20,10 @@ android {
             abiFilters "armeabi", "armeabi-v7a", "x86"
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -54,6 +58,7 @@ dependencies {
     implementation project(path: ':dsbridge')
     implementation project(path: ':converter')
     implementation project(path: ':rnbridge')
+    implementation project(path: ':flutter')
 
 
 //    implementation("com.facebook.flipper:flipper:0.35.0") {

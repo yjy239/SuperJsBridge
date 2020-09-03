@@ -41,10 +41,10 @@ public class BridgePromiseCallback implements PromiseCallback {
     private static final String STACK_FRAME_KEY_METHOD_NAME = "methodName";
 
     private @Nullable
-    Callback mResolve;
-    private @Nullable Callback mReject;
+    CallBackHandler mResolve;
+    private @Nullable CallBackHandler mReject;
 
-    public BridgePromiseCallback(@Nullable Callback resolve, @Nullable Callback reject) {
+    public BridgePromiseCallback(@Nullable CallBackHandler resolve, @Nullable CallBackHandler reject) {
         mResolve = resolve;
         mReject = reject;
     }
@@ -57,7 +57,7 @@ public class BridgePromiseCallback implements PromiseCallback {
     @Override
     public void resolve(Object value) {
         if (mResolve != null) {
-            mResolve.invoke(value);
+            mResolve.complete(value);
             mResolve = null;
             mReject = null;
         }
@@ -232,7 +232,7 @@ public class BridgePromiseCallback implements PromiseCallback {
             errorInfo.putArray(ERROR_MAP_KEY_NATIVE_STACK, new WritableNativeArray());
         }
 
-        mReject.invoke(errorInfo);
+        mReject.complete(errorInfo);
         mResolve = null;
         mReject = null;
     }

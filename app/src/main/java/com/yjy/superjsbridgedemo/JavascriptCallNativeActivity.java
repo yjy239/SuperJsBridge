@@ -14,6 +14,9 @@ import com.yjy.superbridge.internal.BridgeInterceptor;
 import com.yjy.dsbridge.DSBridge.CompletionHandler;
 import com.yjy.dsbridge.DSCompent.DSWebView;
 import com.yjy.superbridge.internal.model.ResponseData;
+import com.yjy.superjsbridgedemo.bridge.JsApi;
+import com.yjy.superjsbridgedemo.bridge.JsEchoApi;
+import com.yjy.superjsbridgedemo.bridge.JsTest;
 
 
 public class JavascriptCallNativeActivity extends AppCompatActivity {

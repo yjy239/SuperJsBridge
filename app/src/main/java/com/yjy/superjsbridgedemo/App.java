@@ -16,6 +16,8 @@ import com.yjy.superjsbridgedemo.rn.SamplePackage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import io.flutter.view.FlutterMain;
+
 /**
  * <pre>
  *     author : yjy
@@ -38,7 +40,7 @@ public class App extends Application implements ReactApplication {
                 protected List<ReactPackage> getPackages() {
                     List<ReactPackage> packages = new PackageList(this).getPackages();
                     // Packages that cannot be autolinked yet can be added manually here, for example:
-                     //packages.add(new SamplePackage());
+//                     packages.add(new SamplePackage());
                     return packages;
                 }
 
@@ -58,6 +60,7 @@ public class App extends Application implements ReactApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        FlutterMain.startInitialization(this);
         SoLoader.init(this, /* native exopackage */ false);
         initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
         Log.e("dir", Environment.getDataDirectory().getAbsolutePath());

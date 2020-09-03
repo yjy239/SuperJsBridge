@@ -3,6 +3,7 @@ package com.yjy.converter;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
+import com.yjy.superbridge.internal.convert.ChildConvertFactory;
 import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.internal.convert.Converter;
 
@@ -28,8 +29,8 @@ public class GsonConvertFactory implements ConvertFactory {
     }
 
     @Override
-    public Converter createConverter(Type type) {
+    public Converter createConverter(Type type, ChildConvertFactory factory) {
         TypeAdapter<?> adapter = mGson.getAdapter(TypeToken.get(type));
-        return new GsonConverter<>(mGson,adapter);
+        return new GsonConverter<>(mGson,adapter,factory);
     }
 }

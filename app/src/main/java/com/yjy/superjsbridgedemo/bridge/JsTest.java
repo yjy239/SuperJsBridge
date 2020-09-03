@@ -1,10 +1,13 @@
-package com.yjy.superjsbridgedemo;
+package com.yjy.superjsbridgedemo.bridge;
 
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.yjy.rnbridge.RnBridge.PromiseCallback;
@@ -29,7 +32,7 @@ import javax.security.auth.callback.CallbackHandler;
  *     github:yjy239@gitub.com
  * </pre>
  */
-public class JsTest extends BridgeInterface {
+public class JsTest extends ReactContextBaseJavaModule {
 
 //    @BridgeMethod(interceptor = true)
 //    public void test1(String s){
@@ -87,7 +90,7 @@ public class JsTest extends BridgeInterface {
             }
         }
 
-        promise.resolve("Array success");
+        promise.reject("Array error");
     }
 
     @BridgeMethod(interceptor = true)
@@ -107,13 +110,41 @@ public class JsTest extends BridgeInterface {
 
     @BridgeMethod(interceptor = true)
     public void callbackTest(User map, CallBackHandler callbackHandler){
-        Log.e("user",map.name);
-        callbackHandler.complete("callbackTest success");
+        Log.e("user",map.toString());
+        callbackHandler.complete(map);
+    }
+
+    @BridgeMethod(interceptor = true)
+    public String returnTest(String map){
+        Log.e("user",map.toString());
+
+        return map;
+    }
+
+    @NonNull
+    @Override
+    public String getName() {
+        return "Sample";
     }
 
 
     class User{
         String name;
+        ArrayList<URL> uri;
+        Love love;
+
+        @Override
+        public String toString() {
+            return "User{" +
+                    "name='" + name + '\'' +
+                    ", uri=" + uri +
+                    ", love=" + love.interest +
+                    '}';
+        }
+    }
+
+    class Love{
+        String interest;
     }
 
     class URL{
