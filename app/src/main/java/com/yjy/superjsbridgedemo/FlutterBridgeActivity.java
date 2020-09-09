@@ -11,6 +11,9 @@ import com.google.gson.Gson;
 import com.yjy.converter.GsonConvertFactory;
 import com.yjy.rnbridge.DefaultRnFactory;
 import com.yjy.superbridge.internal.Bridge;
+import com.yjy.superbridge.internal.CallBackHandler;
+import com.yjy.superbridge.jsbridge.BridgeHandler;
+import com.yjy.superbridge.jsbridge.CallBackFunction;
 import com.yjy.superjsbridgedemo.bridge.JsTest;
 
 import io.flutter.app.FlutterActivity;
@@ -40,6 +43,35 @@ public class FlutterBridgeActivity extends FlutterActivity {
                 .setConvertFactory(GsonConvertFactory.create(new Gson()))
                 .registerInterface("Sample",new JsTest())
                 .build();
+
+
+        bridge.registerHandler("registerTest",new BridgeHandler(){
+
+            @Override
+            public void handler(String data, CallBackHandler<String> function) {
+                Toast.makeText(FlutterBridgeActivity.this,data,Toast.LENGTH_LONG).show();
+                function.complete("registerTest ok");
+            }
+        });
+
+
+        bridge.registerHandler("calHandlerTest",new BridgeHandler(){
+
+            @Override
+            public void handler(String data, CallBackHandler<String> function) {
+                function.complete("calHandlerTest ok");
+                bridge.callHandler("flutter.callFlutter", "test", new CallBackFunction() {
+                    @Override
+                    public void complete(String data) {
+                        Toast.makeText(FlutterBridgeActivity.this,data,Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+
+            }
+        });
+
 //        MethodChannel channel = new MethodChannel(getFlutterView(),"Sample");
 //        channel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
 //            @Override

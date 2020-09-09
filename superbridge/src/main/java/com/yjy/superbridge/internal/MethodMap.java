@@ -68,7 +68,11 @@ public class MethodMap {
 
     }
 
-    public void put(String name,BridgeHandler method){
+    public Map<String, BridgeHandler> getHandlerMap() {
+        return handlerMap;
+    }
+
+    public void put(String name, BridgeHandler method){
 
         handlerMap.put(name, method);
     }
@@ -147,8 +151,8 @@ public class MethodMap {
         Log.e("args",args);
 
         Object object = mNamespaceInterfaces.get(nameSlits[0]);
-        if(object == null){
-            throw new IllegalArgumentException("not register namespace");
+        if("".equals(nameSlits[0])){
+            object = mNamespaceInterfaces.get("default");
         }
 
 
@@ -163,6 +167,10 @@ public class MethodMap {
            BridgeHandler bridge = handlerMap.get(method);
            if(bridge != null){
                bridge.handler(args,handler);
+           }else{
+               if(object == null){
+                   throw new IllegalArgumentException("not register namespace");
+               }
            }
 
            return null;
