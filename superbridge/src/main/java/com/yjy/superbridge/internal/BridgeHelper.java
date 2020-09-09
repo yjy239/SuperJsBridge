@@ -24,8 +24,6 @@ public class BridgeHelper {
             Method[] methods = obj.getClass().getDeclaredMethods();
             for (int i = 0;i<methods.length;i++){
                 final Method method = methods[i];
-                int modify = method.getModifiers();
-                Type[] types = method.getParameterTypes();
                 BridgeMethod bridgeMethod = method.getAnnotation(BridgeMethod.class);
                 if(bridgeMethod != null){
                     register(namespace,obj,method,core,bridgeMethod.interceptor(),registerHandler);

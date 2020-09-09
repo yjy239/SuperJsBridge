@@ -5,23 +5,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableMap;
-import com.yjy.rnbridge.RnBridge.PromiseCallback;
-import com.yjy.superbridge.internal.BridgeField;
-import com.yjy.superbridge.internal.BridgeInterface;
+import com.yjy.rnbridge.RnCompent.PromiseCallback;
 import com.yjy.superbridge.internal.BridgeMethod;
 import com.yjy.superbridge.internal.CallBackHandler;
-import com.yjy.superbridge.jsbridge.CallBackFunction;
-import com.yjy.superjsbridgedemo.model.User;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.callback.CallbackHandler;
 
 /**
  * <pre>
@@ -114,10 +103,10 @@ public class JsTest extends ReactContextBaseJavaModule {
         callbackHandler.complete(map);
     }
 
+    // TODO: 2020/9/3 可以使用goovy脚本编写一个代理对象，注入到RN中
     @BridgeMethod(interceptor = true)
     public String returnTest(String map){
         Log.e("user",map.toString());
-
         return map;
     }
 

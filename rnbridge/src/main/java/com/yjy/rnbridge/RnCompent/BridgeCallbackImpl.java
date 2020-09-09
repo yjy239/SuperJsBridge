@@ -1,16 +1,13 @@
-package com.yjy.rnbridge.RnBridge;
+package com.yjy.rnbridge.RnCompent;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.facebook.react.bridge.JSInstance;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.yjy.superbridge.internal.CallBackHandler;
-import com.yjy.superbridge.internal.convert.ChildConvertFactory;
 import com.yjy.superbridge.internal.convert.ConvertFactory;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**

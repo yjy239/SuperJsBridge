@@ -1,4 +1,4 @@
-package com.yjy.rnbridge.RnBridge;
+package com.yjy.rnbridge.RnCompent;
 
 import androidx.collection.ArrayMap;
 
@@ -11,13 +11,13 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.NativeModuleRegistry;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.module.model.ReactModuleInfo;
-import com.yjy.rnbridge.RnCompent.DefaultCompent.DefaultBridgeModuleHolder;
-import com.yjy.rnbridge.RnCompent.DefaultCompent.DefaultBridgeModuleProvider;
-import com.yjy.rnbridge.RnCompent.DefaultCompent.DefaultBridgeModuleWrapper;
-import com.yjy.rnbridge.RnCompent.dynamic.BridgeJsModule;
-import com.yjy.rnbridge.RnCompent.dynamic.BridgeModuleHolder;
-import com.yjy.rnbridge.RnCompent.dynamic.BridgeModuleWrapper;
-import com.yjy.rnbridge.RnCompent.dynamic.BridgeNativeModuleProvider;
+import com.yjy.rnbridge.RnBridge.DefaultCompent.DefaultBridgeModuleHolder;
+import com.yjy.rnbridge.RnBridge.DefaultCompent.DefaultBridgeModuleProvider;
+import com.yjy.rnbridge.RnBridge.DefaultCompent.DefaultBridgeModuleWrapper;
+import com.yjy.rnbridge.RnBridge.dynamic.BridgeJsModule;
+import com.yjy.rnbridge.RnBridge.dynamic.BridgeModuleHolder;
+import com.yjy.rnbridge.RnBridge.dynamic.BridgeModuleWrapper;
+import com.yjy.rnbridge.RnBridge.dynamic.BridgeNativeModuleProvider;
 import com.yjy.rnbridge.RnReceiveFromPlatformCallback;
 import com.yjy.rnbridge.util.ReflectUtils;
 import com.yjy.rnbridge.util.Utils;

@@ -1,13 +1,8 @@
-package com.yjy.rnbridge.RnCompent.dynamic;
+package com.yjy.rnbridge.RnBridge.dynamic;
 
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.BaseJavaModule;
-import com.facebook.react.bridge.ModuleHolder;
-import com.facebook.react.bridge.NativeModule;
-import com.facebook.react.module.model.ReactModuleInfo;
-
-import javax.inject.Provider;
 
 /**
  * <pre>

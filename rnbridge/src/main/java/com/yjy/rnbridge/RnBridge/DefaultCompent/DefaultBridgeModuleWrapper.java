@@ -1,4 +1,4 @@
-package com.yjy.rnbridge.RnCompent.DefaultCompent;
+package com.yjy.rnbridge.RnBridge.DefaultCompent;
 
 import android.text.TextUtils;
 
@@ -9,8 +9,8 @@ import com.facebook.react.bridge.JavaModuleWrapper;
 import com.facebook.react.bridge.ModuleHolder;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReadableNativeArray;
-import com.yjy.rnbridge.RnBridge.RnCore;
-import com.yjy.rnbridge.RnCompent.core.BridgeMethodWrapper;
+import com.yjy.rnbridge.RnCompent.RnCore;
+import com.yjy.rnbridge.RnBridge.core.BridgeMethodWrapper;
 import com.yjy.rnbridge.util.ReflectUtils;
 import com.yjy.superbridge.internal.CallBackHandler;
 import com.yjy.superbridge.internal.ProxyHandler;

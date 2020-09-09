@@ -1,4 +1,4 @@
-package com.yjy.rnbridge.RnBridge;
+package com.yjy.rnbridge.RnCompent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

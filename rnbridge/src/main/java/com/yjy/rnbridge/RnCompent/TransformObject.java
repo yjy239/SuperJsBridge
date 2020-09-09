@@ -1,4 +1,4 @@
-package com.yjy.rnbridge.RnBridge;
+package com.yjy.rnbridge.RnCompent;
 
 /**
  * <pre>

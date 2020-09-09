@@ -1,4 +1,4 @@
-package com.yjy.rnbridge.RnCompent.dynamic;
+package com.yjy.rnbridge.RnBridge.dynamic;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.CatalystInstance;

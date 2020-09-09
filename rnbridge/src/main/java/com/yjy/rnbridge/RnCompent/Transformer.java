@@ -1,7 +1,4 @@
-package com.yjy.rnbridge.RnBridge;
-
-import android.text.TextUtils;
-import android.util.Log;
+package com.yjy.rnbridge.RnCompent;
 
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;

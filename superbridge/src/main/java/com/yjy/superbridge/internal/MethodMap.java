@@ -2,6 +2,7 @@ package com.yjy.superbridge.internal;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.yjy.superbridge.internal.convert.ConvertFactory;
 import com.yjy.superbridge.internal.convert.Converter;
@@ -143,6 +144,8 @@ public class MethodMap {
         String[] nameSlits = parseNamespace(name);
         String method = nameSlits[1];
 
+        Log.e("args",args);
+
         Object object = mNamespaceInterfaces.get(nameSlits[0]);
         if(object == null){
             throw new IllegalArgumentException("not register namespace");
@@ -192,6 +195,18 @@ public class MethodMap {
             methods.add(invokerEntry.getValue());
         }
         return methods;
+
+    }
+
+    public Map<String,Invoker>  getMap(String  namespace) {
+        ArrayList<Invoker> methods = new ArrayList<>();
+        Object obj = mNamespaceInterfaces.get(namespace);
+        if(obj == null){
+            return null;
+        }
+        Map<String,Invoker> map = methodMap.get(obj);
+
+        return map;
 
     }
 
@@ -268,7 +283,7 @@ public class MethodMap {
                 }
 
                 Annotation[][] annotations = method.getParameterAnnotations();
-                Class<?>[] types = method.getParameterTypes();
+                Type[] types = method.getGenericParameterTypes();
 
                 ArrayList<String> methodParameterNames = new ArrayList<String>(types.length);
                 for (int i = 0; i < annotations.length; i++) {
@@ -284,25 +299,38 @@ public class MethodMap {
                 }
 
                 boolean isAsync = types[types.length-1] == CallBackHandler.class
-                        ||CallBackHandler.class.isAssignableFrom(types[types.length-1]);
+                        ||CallBackHandler.class.isAssignableFrom((Class<?>) types[types.length-1]);
+
+                //根据类型转换数据到数组
+                Object[] params = new Object[types.length];
 
                 if(methodParameterNames.size() == 0){
                     try {
-                        if(isAsync){
-                            invoke(obj,data,handler);
-                            return null;
-                        }else {
-                            return invoke(obj,data);
+                        //则尝试的把String 转化为当前的Object
+                        if(types.length > 3){
+                            throw new IllegalAccessException("no @BridgeField method,can only " +
+                                    "had 2 params in method.[Object,CallbackHandler],[Object]");
                         }
 
+                        transform(params, 0, data, types[0],factory);
 
+                        if(isAsync){
+                            params[types.length - 1] = handler;
+                        }
+
+                        Object res = invoke(obj,params);
+
+                        if(res == null){
+                            return null;
+                        }
+                        Converter converter = factory.createConverter(res.getClass(),null );
+                        return converter.toConvert(res);
                     }catch (Exception e){
                         e.printStackTrace();
                     }
                 }
 
-                //根据类型转换数据到数组
-                Object[] params = new Object[types.length];
+
 
 
                 try {

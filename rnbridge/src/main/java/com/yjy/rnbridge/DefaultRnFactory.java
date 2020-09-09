@@ -1,7 +1,7 @@
 package com.yjy.rnbridge;
 
 import com.facebook.react.ReactInstanceManager;
-import com.yjy.rnbridge.RnBridge.RnCore;
+import com.yjy.rnbridge.RnCompent.RnCore;
 import com.yjy.superbridge.internal.IBridgeClient;
 import com.yjy.superbridge.internal.IBridgeCore;
 import com.yjy.superbridge.internal.IBridgeFactory;

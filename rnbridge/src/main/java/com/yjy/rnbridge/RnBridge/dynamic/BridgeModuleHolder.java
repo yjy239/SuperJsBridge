@@ -1,16 +1,9 @@
-package com.yjy.rnbridge.RnCompent.dynamic;
-
-import android.util.Log;
+package com.yjy.rnbridge.RnBridge.dynamic;
 
 import com.facebook.react.bridge.ModuleHolder;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.module.model.ReactModuleInfo;
 import com.yjy.superbridge.internal.IBridgeCore;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.logging.Logger;
 
 import javax.inject.Provider;
 
